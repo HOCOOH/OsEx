@@ -68,6 +68,9 @@ struct proc {
 	int exit_status; /**< for parent */
 
 	struct file_desc * filp[NR_FILES];
+
+	int current_queue;
+	int time_remain;
 };
 
 struct task {

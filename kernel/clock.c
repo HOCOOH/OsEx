@@ -14,6 +14,7 @@
 #include "string.h"
 #include "fs.h"
 #include "proc.h"
+#include "mfqs_queue.h"
 #include "tty.h"
 #include "console.h"
 #include "global.h"
@@ -34,8 +35,12 @@ PUBLIC void clock_handler(int irq)
 	if (++ticks >= MAX_TICKS)
 		ticks = 0;
 
-	if (p_proc_ready->ticks)
-		p_proc_ready->ticks--;
+	// if (p_proc_ready->ticks)
+	// 	p_proc_ready->ticks--;
+
+	if (p_proc_ready->time_remain) {
+		p_proc_ready->time_remain--;
+	}
 
 	if (key_pressed)
 		inform_int(TASK_TTY);
@@ -44,12 +49,14 @@ PUBLIC void clock_handler(int irq)
 		return;
 	}
 
-	if (p_proc_ready->ticks > 0) {
-		return;
-	}
+	// if (p_proc_ready->ticks > 0) {
+	// 	return;
+	// }
 
-	schedule();
+	// schedule();
 
+	schedule_mfqs();
+	// bb;
 }
 
 /*****************************************************************************

@@ -17,6 +17,7 @@
 #include "tty.h"
 #include "console.h"
 #include "proc.h"
+#include "mfqs_queue.h"
 #include "global.h"
 #include "proto.h"
 
@@ -96,3 +97,6 @@ PUBLIC	const int	LOGBUF_SIZE	= 0x100000;
 PUBLIC	char *		logdiskbuf	= (char*)0x900000;
 PUBLIC	const int	LOGDISKBUF_SIZE	= 0x100000;
 
+PUBLIC struct proc_queue mfqs_queue[NR_PROC_QUEUE] = {
+	{{}, 0, 0, 0}, {{}, 0, 0, 0}, {{}, 0, 0, 0}
+};

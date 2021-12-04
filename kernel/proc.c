@@ -14,6 +14,7 @@
 #include "string.h"
 #include "fs.h"
 #include "proc.h"
+#include "mfqs_queue.h"
 #include "global.h"
 #include "proto.h"
 
@@ -51,6 +52,38 @@ PUBLIC void schedule()
 					p->ticks = p->priority;
 	}
 }
+
+PUBLIC void schedule_mfqs() {
+	// 时间片用完，移动当前进程
+	// disp_int(p_proc_ready->time_remain);
+	// bb;
+	if (p_proc_ready->time_remain <= 0) {
+		int queue_num = p_proc_ready->current_queue;
+		int pid = -1;
+		dequeue(queue_num, &pid);
+		if (queue_num < NR_PROC_QUEUE) {
+			queue_num += 1;
+		}
+		enqueue(queue_num, pid);
+	}
+
+	// 获取当前三个队列中最先应执行的进程（第一个不为空队列的首元素）
+	int pid_expected = -1;
+	struct proc_queue* q = mfqs_queue;
+    while (q < mfqs_queue + NR_PROC_QUEUE) {
+        if (q->front != q->rear) {
+            pid_expected = q->proc_pid[q->front];
+			break;
+        }
+        q++;
+    }
+
+	assert(pid_expected >= 0);
+	p_proc_ready = proc_table + pid_expected;
+	return;
+}
+
+
 
 /*****************************************************************************
  *                                sys_sendrec

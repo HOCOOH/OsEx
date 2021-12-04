@@ -13,7 +13,7 @@ ENTRYOFFSET	=   0x400
 # Programs, flags, etc.
 ASM		= nasm
 DASM		= objdump
-CC		= gcc
+CC		= clang
 LD		= ld
 ASMBFLAGS	= -I boot/include/
 ASMKFLAGS	= -I include/ -I include/sys/ -f elf
@@ -33,6 +33,7 @@ OBJS		= kernel/kernel.o kernel/start.o kernel/main.o\
 			kernel/i8259.o kernel/global.o kernel/protect.o kernel/proc.o\
 			kernel/systask.o kernel/hd.o\
 			kernel/kliba.o kernel/klib.o\
+			kernel/mfqs_queue.o\
 			lib/syslog.o\
 			mm/main.o mm/forkexit.o mm/exec.o\
 			fs/main.o fs/open.o fs/misc.o fs/read_write.o\
@@ -208,3 +209,5 @@ fs/link.o: fs/link.c
 fs/disklog.o: fs/disklog.c
 	$(CC) $(CFLAGS) -o $@ $<
 
+kernel/mfqs_queue.o : kernel/mfqs_queue.c
+	$(CC) $(CFLAGS) -o $@ $<

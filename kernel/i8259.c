@@ -11,6 +11,7 @@
 #include "const.h"
 #include "protect.h"
 #include "proc.h"
+#include "mfqs_queue.h"
 #include "fs.h"
 #include "tty.h"
 #include "console.h"

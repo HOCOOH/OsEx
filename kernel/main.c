@@ -12,6 +12,7 @@
 #include "string.h"
 #include "fs.h"
 #include "proc.h"
+#include "mfqs_queue.h"
 #include "tty.h"
 #include "console.h"
 #include "global.h"
@@ -38,6 +39,15 @@ PUBLIC int kernel_main()
 	struct proc * p = proc_table;
 
 	char * stk = task_stack + STACK_SIZE_TOTAL;
+
+	/* prco schudule */
+	mfqs_queue[0].time_slot = 5;
+	mfqs_queue[1].time_slot = 5;
+	mfqs_queue[2].time_slot = 5;
+	for (int i = 0; i < 3; i++) {
+		mfqs_queue[i].front = 0;
+		mfqs_queue[i].rear = 0;
+	}
 
 	for (i = 0; i < NR_TASKS + NR_PROCS; i++,p++,t++) {
 		if (i >= NR_TASKS + NR_NATIVE_PROCS) {
@@ -118,6 +128,7 @@ PUBLIC int kernel_main()
 			p->filp[j] = 0;
 
 		stk -= t->stacksize;
+		enqueue(0, i);
 	}
 
 	k_reenter = 0;
@@ -192,6 +203,7 @@ void untar(const char * filename)
 	while (1) {
 		read(fd, buf, SECTOR_SIZE);
 		if (buf[0] == 0 || buf[0] == 'p')
+	// 	if (buf[0] == 0)
 			break;
 
 		struct posix_tar_header * phdr = (struct posix_tar_header *)buf;
@@ -211,9 +223,11 @@ void untar(const char * filename)
 		}
 		printf("    %s (%d bytes)\n", phdr->name, f_len);
 		while (bytes_left) {
+			printf("%d\n", bytes_left);
 			int iobytes = min(chunk, bytes_left);
 			read(fd, buf,
 			     ((iobytes - 1) / SECTOR_SIZE + 1) * SECTOR_SIZE);
+			bb;
 			write(fdout, buf, iobytes);
 			bytes_left -= iobytes;
 		}
@@ -310,6 +324,7 @@ void Init()
 	printf("Init() is running ...\n");
 
 	/* extract `cmd.tar' */
+	// milli_delay(100000);
 	untar("/cmd.tar");
 			
 

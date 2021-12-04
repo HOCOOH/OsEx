@@ -4,12 +4,15 @@
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                                                     Forrest Yu, 2005
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-
+#include "mfqs_queue.h"
 /* EXTERN is defined as extern except in global.c */
 #ifdef	GLOBAL_VARIABLES_HERE
 #undef	EXTERN
 #define	EXTERN
 #endif
+
+
+#define bb asm("xchg %bx, %bx")
 
 EXTERN	int	ticks;
 
@@ -62,3 +65,6 @@ extern	char *			logbuf;
 extern	const int		LOGBUF_SIZE;
 extern	char *			logdiskbuf;
 extern	const int		LOGDISKBUF_SIZE;
+
+
+extern struct proc_queue mfqs_queue[NR_PROC_QUEUE];

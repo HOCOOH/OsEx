@@ -14,6 +14,7 @@
 #include "string.h"
 #include "fs.h"
 #include "proc.h"
+#include "mfqs_queue.h"
 #include "tty.h"
 #include "console.h"
 #include "global.h"

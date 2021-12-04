@@ -13,6 +13,7 @@
 #include "tty.h"
 #include "console.h"
 #include "proc.h"
+#include "mfqs_queue.h"
 #include "string.h"
 #include "global.h"
 #include "proto.h"

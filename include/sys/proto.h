@@ -123,6 +123,7 @@ PUBLIC int  is_current_console(CONSOLE* p_con);
 
 /* proc.c */
 PUBLIC	void	schedule();
+PUBLIC 	void 	schedule_mfqs();
 PUBLIC	void*	va2la(int pid, void* va);
 PUBLIC	int	ldt_seg_linear(struct proc* p, int idx);
 PUBLIC	void	reset_msg(MESSAGE* p);
@@ -133,6 +134,10 @@ PUBLIC void	inform_int(int task_nr);
 
 /* lib/misc.c */
 PUBLIC void spin(char * func_name);
+
+/* kernel/mfqs_queue.c */
+PUBLIC int enqueue(int queue_num, int pid);
+PUBLIC int dequeue(int queue_num, int* p_pid);
 
 /* 以下是系统调用相关 */
 

@@ -292,5 +292,8 @@ enum msgtype {
 #define	NR_DEFAULT_FILE_SECTS	2048 /* 2048 * 512 = 1MB */
 
 
+#define NR_PROC_QUEUE 3
+#define NR_PROC_IN_QUEUE 50
+
 
 #endif /* _ORANGES_CONST_H_ */
