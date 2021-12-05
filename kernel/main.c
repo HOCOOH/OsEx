@@ -41,9 +41,9 @@ PUBLIC int kernel_main()
 	char * stk = task_stack + STACK_SIZE_TOTAL;
 
 	/* prco schudule */
-	mfqs_queue[0].time_slot = 5;
-	mfqs_queue[1].time_slot = 5;
-	mfqs_queue[2].time_slot = 5;
+	mfqs_queue[0].time_slot = 15;
+	mfqs_queue[1].time_slot = 15;
+	mfqs_queue[2].time_slot = 15;
 	for (int i = 0; i < 3; i++) {
 		mfqs_queue[i].front = 0;
 		mfqs_queue[i].rear = 0;

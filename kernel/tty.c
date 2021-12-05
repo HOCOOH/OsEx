@@ -92,9 +92,9 @@ PUBLIC void task_tty()
 		send_recv(RECEIVE, ANY, &msg);
 
 		int src = msg.source;
-		if (src == TASK_TTY) {
-			continue;
-		}
+		// if (src == TASK_TTY) {
+		// 	continue;
+		// }
 		assert(src != TASK_TTY);
 
 		TTY* ptty = &tty_table[msg.DEVICE];

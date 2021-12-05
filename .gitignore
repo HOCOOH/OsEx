@@ -3,3 +3,5 @@
 *.bin
 80m.img
 a.img
+command/echo
+command/pwd

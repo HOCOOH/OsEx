@@ -16,11 +16,12 @@ PUBLIC int enqueue(int queue_num, int pid) {
     struct proc_queue* q = mfqs_queue + queue_num;
     p->current_queue = queue_num;
     p->time_remain = q->time_slot;
-    if (NEXT(q->front) == q->rear) {
+
+    if (NEXT(q->rear) == q->front) {
         return -1;
     }
-    q->proc_pid[q->front] = pid;
-    q->front = NEXT(q->front);
+    q->proc_pid[q->rear] = pid;
+    q->rear = NEXT(q->rear);
     return 0;
 }
 
@@ -29,7 +30,7 @@ PUBLIC int dequeue(int queue_num, int* p_pid) {
     if (q->front == q->rear) {
         return -1;
     }
-    *p_pid = q->proc_pid[q->rear];
-    q->rear = NEXT(q->rear);
+    *p_pid = q->proc_pid[q->front];
+    q->front = NEXT(q->front);
     return 0;
 }

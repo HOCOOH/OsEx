@@ -54,12 +54,17 @@ PUBLIC void schedule()
 }
 
 PUBLIC void schedule_mfqs() {
+	int queue_num = p_proc_ready->current_queue;
+	int pid = -1;
+	// block
+	if (p_proc_ready->p_flags) {
+		dequeue(queue_num, &pid);
+		enqueue(queue_num, pid);
+ 	}
 	// 时间片用完，移动当前进程
 	// disp_int(p_proc_ready->time_remain);
 	// bb;
-	if (p_proc_ready->time_remain <= 0) {
-		int queue_num = p_proc_ready->current_queue;
-		int pid = -1;
+	else if (p_proc_ready->time_remain <= 0) {
 		dequeue(queue_num, &pid);
 		if (queue_num < NR_PROC_QUEUE) {
 			queue_num += 1;
@@ -69,14 +74,18 @@ PUBLIC void schedule_mfqs() {
 
 	// 获取当前三个队列中最先应执行的进程（第一个不为空队列的首元素）
 	int pid_expected = -1;
-	struct proc_queue* q = mfqs_queue;
-    while (q < mfqs_queue + NR_PROC_QUEUE) {
-        if (q->front != q->rear) {
-            pid_expected = q->proc_pid[q->front];
-			break;
-        }
-        q++;
-    }
+	for (int i = 0; i < NR_PROC_QUEUE; i++) {
+		struct proc_queue* q = mfqs_queue + i;
+		for (int j = q->front; j != q->rear; j = NEXT(j)) {
+			struct proc* p = proc_table + q->proc_pid[j];
+			if (p->p_flags == 0) {
+				pid_expected = q->proc_pid[j];
+				break;
+			}
+
+		}
+	}
+
 
 	assert(pid_expected >= 0);
 	p_proc_ready = proc_table + pid_expected;
@@ -208,7 +217,7 @@ PUBLIC void reset_msg(MESSAGE* p)
 PRIVATE void block(struct proc* p)
 {
 	assert(p->p_flags);
-	schedule();
+	schedule_mfqs();
 }
 
 /*****************************************************************************
