@@ -68,3 +68,6 @@ extern	const int		LOGDISKBUF_SIZE;
 
 
 extern struct proc_queue mfqs_queue[NR_PROC_QUEUE];
+
+extern int task_run_flag;
+extern int proc_ticks;

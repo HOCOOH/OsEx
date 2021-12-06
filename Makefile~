@@ -13,7 +13,7 @@ ENTRYOFFSET	=   0x400
 # Programs, flags, etc.
 ASM		= nasm
 DASM		= objdump
-CC		= gcc
+CC		= clang
 LD		= ld
 ASMBFLAGS	= -I boot/include/
 ASMKFLAGS	= -I include/ -I include/sys/ -f elf
@@ -58,7 +58,7 @@ everything : $(ORANGESBOOT) $(ORANGESKERNEL)
 
 all : realclean everything
 
-image : realclean everything clean buildimg buildcmd
+image : realclean everything clean buildimg
 
 clean :
 	rm -f $(OBJS) $(LOBJS)
@@ -76,9 +76,6 @@ buildimg :
 	sudo cp -fv boot/loader.bin /mnt/floppy/
 	sudo cp -fv kernel.bin /mnt/floppy
 	sudo umount /mnt/floppy
-
-buildcmd:
-	make install -C command
 
 boot/boot.bin : boot/boot.asm boot/include/load.inc boot/include/fat12hdr.inc
 	$(ASM) $(ASMBFLAGS) -o $@ $<

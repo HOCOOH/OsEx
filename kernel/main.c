@@ -41,12 +41,13 @@ PUBLIC int kernel_main()
 	char * stk = task_stack + STACK_SIZE_TOTAL;
 
 	/* prco schudule */
-	mfqs_queue[0].time_slot = 15;
-	mfqs_queue[1].time_slot = 15;
-	mfqs_queue[2].time_slot = 15;
-	for (int i = 0; i < 3; i++) {
-		mfqs_queue[i].front = 0;
-		mfqs_queue[i].rear = 0;
+	mfqs_queue[0].time_slot = 2;
+	mfqs_queue[1].time_slot = 5;
+	mfqs_queue[2].time_slot = 10;
+	int k = 0;
+	for (; k < 3; k++) {
+		mfqs_queue[k].front = 0;
+		mfqs_queue[k].rear = 0;
 	}
 
 	for (i = 0; i < NR_TASKS + NR_PROCS; i++,p++,t++) {
@@ -55,26 +56,27 @@ PUBLIC int kernel_main()
 			continue;
 		}
 
-	        if (i < NR_TASKS) {     /* TASK */
-                        t	= task_table + i;
-                        priv	= PRIVILEGE_TASK;
-                        rpl     = RPL_TASK;
-                        eflags  = 0x1202;/* IF=1, IOPL=1, bit 2 is always 1 */
+		if (i < NR_TASKS) {     /* TASK */
+			t	= task_table + i;
+			priv	= PRIVILEGE_TASK;
+			rpl     = RPL_TASK;
+			eflags  = 0x1202;/* IF=1, IOPL=1, bit 2 is always 1 */
 			prio    = 15;
-                }
-                else {                  /* USER PROC */
-                        t	= user_proc_table + (i - NR_TASKS);
-                        priv	= PRIVILEGE_USER;
-                        rpl     = RPL_USER;
-                        eflags  = 0x202;	/* IF=1, bit 2 is always 1 */
+		} 
+		else {                  /* USER PROC */
+			t	= user_proc_table + (i - NR_TASKS);
+			priv	= PRIVILEGE_USER;
+			rpl     = RPL_USER;
+			eflags  = 0x202;	/* IF=1, bit 2 is always 1 */
 			prio    = 5;
-                }
+			enqueue(0, i);
+		}
 
 		strcpy(p->name, t->name);	/* name of the process */
 		p->p_parent = NO_TASK;
 
-		// if (strcmp(t->name, "INIT") != 0) {
-		if (i != 5) {
+		if (strcmp(t->name, "INIT") != 0) {
+		// if (i != 5) {
 			p->ldts[INDEX_LDT_C]  = gdt[SELECTOR_KERNEL_CS >> 3];
 			p->ldts[INDEX_LDT_RW] = gdt[SELECTOR_KERNEL_DS >> 3];
 
@@ -128,7 +130,6 @@ PUBLIC int kernel_main()
 			p->filp[j] = 0;
 
 		stk -= t->stacksize;
-		enqueue(0, i);
 	}
 
 	k_reenter = 0;
@@ -202,8 +203,8 @@ void untar(const char * filename)
 
 	while (1) {
 		read(fd, buf, SECTOR_SIZE);
-		if (buf[0] == 0 || buf[0] == 'p')
-	// 	if (buf[0] == 0)
+		// if (buf[0] == 0 || buf[0] == 'p')
+		if (buf[0] == 0)
 			break;
 
 		struct posix_tar_header * phdr = (struct posix_tar_header *)buf;
@@ -223,11 +224,10 @@ void untar(const char * filename)
 		}
 		printf("    %s (%d bytes)\n", phdr->name, f_len);
 		while (bytes_left) {
-			printf("%d\n", bytes_left);
+			// printf("%d\n", bytes_left);
 			int iobytes = min(chunk, bytes_left);
 			read(fd, buf,
 			     ((iobytes - 1) / SECTOR_SIZE + 1) * SECTOR_SIZE);
-			bb;
 			write(fdout, buf, iobytes);
 			bytes_left -= iobytes;
 		}

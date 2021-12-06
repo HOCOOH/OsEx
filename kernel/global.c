@@ -100,3 +100,6 @@ PUBLIC	const int	LOGDISKBUF_SIZE	= 0x100000;
 PUBLIC struct proc_queue mfqs_queue[NR_PROC_QUEUE] = {
 	{{}, 0, 0, 0}, {{}, 0, 0, 0}, {{}, 0, 0, 0}
 };
+
+PUBLIC int task_run_flag = 1;
+PUBLIC int proc_ticks = 0;

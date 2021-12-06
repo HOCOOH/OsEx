@@ -54,43 +54,107 @@ PUBLIC void schedule()
 }
 
 PUBLIC void schedule_mfqs() {
-	int queue_num = p_proc_ready->current_queue;
-	int pid = -1;
-	// block
-	if (p_proc_ready->p_flags) {
-		dequeue(queue_num, &pid);
-		enqueue(queue_num, pid);
- 	}
-	// 时间片用完，移动当前进程
-	// disp_int(p_proc_ready->time_remain);
-	// bb;
-	else if (p_proc_ready->time_remain <= 0) {
-		dequeue(queue_num, &pid);
-		if (queue_num < NR_PROC_QUEUE) {
-			queue_num += 1;
-		}
-		enqueue(queue_num, pid);
-	}
+	// run tasks
+	if (task_run_flag) {
+		struct proc*	p;
+		int	greatest_ticks = 0;
 
-	// 获取当前三个队列中最先应执行的进程（第一个不为空队列的首元素）
-	int pid_expected = -1;
-	for (int i = 0; i < NR_PROC_QUEUE; i++) {
-		struct proc_queue* q = mfqs_queue + i;
-		for (int j = q->front; j != q->rear; j = NEXT(j)) {
-			struct proc* p = proc_table + q->proc_pid[j];
+		for (p = proc_table; p < proc_table + NR_TASKS; p++) {
 			if (p->p_flags == 0) {
+				if (p->ticks > greatest_ticks) {
+					greatest_ticks = p->ticks;
+					p_proc_ready = p;
+				}
+			}
+		}
+		// all tasks in this loop either have executed or are blocked
+		if (!greatest_ticks) {
+			for (p = proc_table; p < proc_table + NR_TASKS; p++) {
+				if (p->p_flags == 0) {
+					p->ticks = p->priority;
+				}
+			}
+			task_run_flag = 0;
+			proc_ticks = 0;	
+		}
+	}
+	// run user proc
+	if (!task_run_flag) {
+		struct proc_queue* q = mfqs_queue;
+		struct proc* p;
+		int pid_buf = -1;
+		int pid_expected = -1;
+		int i, j;
+		int old_rear = q->rear;
+		for (j = q->front; j != old_rear; j = NEXT(j)) {
+			p = proc_table + q->proc_pid[j];
+			if (p->time_remain < 1 || p->p_flags) {
+				dequeue(0, &pid_buf);
+				enqueue(0, pid_buf);
+			}
+			else {
 				pid_expected = q->proc_pid[j];
 				break;
 			}
 
 		}
+		// all procs in this loop either have executed or are blocked
+		if (pid_expected == -1) {
+			task_run_flag = 1;
+			schedule_mfqs();
+			return;
+		}
+		assert(pid_expected >= NR_TASKS);
+		p_proc_ready = proc_table + pid_expected;
+		return;
 	}
-
-
-	assert(pid_expected >= 0);
-	p_proc_ready = proc_table + pid_expected;
-	return;
 }
+
+// PUBLIC void schedule_mfqs() {
+// 	int queue_num = p_proc_ready->current_queue;
+// 	int pid = -1;
+
+// 	// block
+// 	if (p_proc_ready->p_flags) {
+// 		dequeue(queue_num, &pid);
+// 		enqueue(queue_num, pid);
+//  	}
+// 	// 时间片用完，移动当前进程
+// 	// disp_int(p_proc_ready->time_remain);
+// 	// bb;
+// 	else if (p_proc_ready->time_remain <= 0) {
+// 		dequeue(queue_num, &pid);
+// 		// if (queue_num < NR_PROC_QUEUE) {
+// 		// 	queue_num += 1;
+// 		// }
+// 		enqueue(queue_num, pid);
+// 	}
+
+// 	// 获取当前三个队列中最先应执行的进程（第一个不为空队列的首元素）
+// 	int pid_expected = -1;
+// 	int i, j;
+// 	for (i = 0; i < NR_PROC_QUEUE; i++) {
+// 		struct proc_queue* q = mfqs_queue + i;
+// 		for (j = q->front; j != q->rear; j = NEXT(j)) {
+// 			struct proc* p = proc_table + q->proc_pid[j];
+// 			if (p->p_flags == 0) {
+// 				pid_expected = q->proc_pid[j];
+// 				while (j != q->front) {
+// 					// bb;
+// 					dequeue(i, &pid);
+// 					enqueue(i, pid);
+// 				}
+// 				break;
+// 			}
+
+// 		}
+// 	}
+
+
+// 	assert(pid_expected >= 0);
+// 	p_proc_ready = proc_table + pid_expected;
+// 	return;
+// }
 
 
 
@@ -217,6 +281,7 @@ PUBLIC void reset_msg(MESSAGE* p)
 PRIVATE void block(struct proc* p)
 {
 	assert(p->p_flags);
+	// schedule();
 	schedule_mfqs();
 }
 
