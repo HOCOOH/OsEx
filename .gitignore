@@ -5,3 +5,6 @@
 a.img
 command/echo
 command/pwd
+*.tar
+*.a
+krnl.map

@@ -80,24 +80,35 @@ PUBLIC void schedule_mfqs() {
 	}
 	// run user proc
 	if (!task_run_flag) {
-		struct proc_queue* q = mfqs_queue;
+		struct proc_queue* q;
 		struct proc* p;
 		int pid_buf = -1;
 		int pid_expected = -1;
-		int i, j;
-		int old_rear = q->rear;
-		for (j = q->front; j != old_rear; j = NEXT(j)) {
-			p = proc_table + q->proc_pid[j];
-			if (p->time_remain < 1 || p->p_flags) {
-				dequeue(0, &pid_buf);
-				enqueue(0, pid_buf);
-			}
-			else {
-				pid_expected = q->proc_pid[j];
-				break;
-			}
+		int i, j, old_rear;
 
+		for (i = 0; i < NR_PROC_QUEUE; i++) {
+			q = mfqs_queue + i;
+			old_rear = q->rear;
+			for (j = q->front; j != old_rear; j = NEXT(j)) {
+				p = proc_table + q->proc_pid[j];
+				if (p->time_remain < 1) {
+					dequeue(p->current_queue, &pid_buf);
+					if (p->current_queue < NR_PROC_QUEUE - 1) {
+						p->current_queue++;
+					}
+					enqueue(p->current_queue, pid_buf, 0);
+				}
+				else if (p->p_flags) {
+					dequeue(p->current_queue, &pid_buf);
+					enqueue(p->current_queue, pid_buf, p->time_remain);
+				}
+				else {
+					pid_expected = q->proc_pid[j];
+					goto loop_out;
+				}
+			}	
 		}
+		loop_out:
 		// all procs in this loop either have executed or are blocked
 		if (pid_expected == -1) {
 			task_run_flag = 1;
@@ -106,7 +117,10 @@ PUBLIC void schedule_mfqs() {
 		}
 		assert(pid_expected >= NR_TASKS);
 		p_proc_ready = proc_table + pid_expected;
-		return;
+		// char info[STR_DEFAULT_LEN];
+		// int text_color = MAKE_COLOR(GREEN, RED);
+		// sprintf(info, "%s\n", p_proc_ready->name);
+		// disp_color_str(info, text_color);
 	}
 }
 

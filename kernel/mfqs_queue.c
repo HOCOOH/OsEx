@@ -11,12 +11,17 @@
 #include "global.h"
 #include "proto.h"
 
-PUBLIC int enqueue(int queue_num, int pid) {
+PUBLIC int enqueue(int queue_num, int pid, int time_remain) {
     struct proc* p = proc_table + pid;
     struct proc_queue* q = mfqs_queue + queue_num;
     p->current_queue = queue_num;
-    p->time_remain = q->time_slot;
-
+    if (time_remain) {
+        p->time_remain = time_remain;
+    }
+    else {
+        p->time_remain = q->time_slot;
+    }
+    
     if (NEXT(q->rear) == q->front) {
         return -1;
     }

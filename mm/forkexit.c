@@ -113,7 +113,7 @@ PUBLIC int do_fork()
 		  DA_LIMIT_4K | DA_32 | DA_DRW | PRIVILEGE_USER << 5);
 
 	/* enqueue child proc */
-	enqueue(0, proc2pid(p));
+	enqueue(0, proc2pid(p), 0);
 
 	/* tell FS, see fs_fork() */
 	MESSAGE msg2fs;

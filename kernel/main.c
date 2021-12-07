@@ -42,8 +42,8 @@ PUBLIC int kernel_main()
 
 	/* prco schudule */
 	mfqs_queue[0].time_slot = 2;
-	mfqs_queue[1].time_slot = 5;
-	mfqs_queue[2].time_slot = 10;
+	mfqs_queue[1].time_slot = 2;
+	mfqs_queue[2].time_slot = 2;
 	int k = 0;
 	for (; k < 3; k++) {
 		mfqs_queue[k].front = 0;
@@ -69,7 +69,7 @@ PUBLIC int kernel_main()
 			rpl     = RPL_USER;
 			eflags  = 0x202;	/* IF=1, bit 2 is always 1 */
 			prio    = 5;
-			enqueue(0, i);
+			enqueue(0, i, 0);
 		}
 
 		strcpy(p->name, t->name);	/* name of the process */
@@ -135,7 +135,7 @@ PUBLIC int kernel_main()
 	k_reenter = 0;
 	ticks = 0;
 
-	p_proc_ready	= proc_table;
+	p_proc_ready = proc_table;
 
 	init_clock();
         init_keyboard();

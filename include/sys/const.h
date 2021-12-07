@@ -295,6 +295,6 @@ enum msgtype {
 #define NR_PROC_QUEUE 3
 #define NR_PROC_IN_QUEUE 50
 
-#define MAX_PROC_TICKS 20
+#define MAX_PROC_TICKS 10
 
 #endif /* _ORANGES_CONST_H_ */
