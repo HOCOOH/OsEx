@@ -29,10 +29,11 @@
  * 
  * @return  PID of the terminated child.
  *****************************************************************************/
-PUBLIC int wait(int * status)
+PUBLIC int wait(int * status, int pid)
 {
 	MESSAGE msg;
 	msg.type   = WAIT;
+	msg.PID	= pid;
 
 	send_recv(BOTH, TASK_MM, &msg);
 

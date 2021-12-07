@@ -198,9 +198,11 @@ PUBLIC void do_exit(int status)
 	if (proc_table[parent_pid].p_flags & WAITING) { /* parent is waiting */
 		proc_table[parent_pid].p_flags &= ~WAITING;
 		cleanup(&proc_table[pid]);
+		printl("proc %d exit\n", pid);
 	}
 	else { /* parent is not waiting */
 		proc_table[pid].p_flags |= HANGING;
+		printl("proc %d hanging\n", pid);
 	}
 
 	/* if the proc has any child, make INIT the new parent */
@@ -259,29 +261,50 @@ PRIVATE void cleanup(struct proc * proc)
 PUBLIC void do_wait()
 {
 	int pid = mm_msg.source;
+	int pid_chlid = mm_msg.PID;
 
 	int i;
-	int children = 0;
-	struct proc* p_proc = proc_table;
-	for (i = 0; i < NR_TASKS + NR_PROCS; i++,p_proc++) {
-		if (p_proc->p_parent == pid) {
-			children++;
-			if (p_proc->p_flags & HANGING) {
-				cleanup(p_proc);
-				return;
-			}
+	if (pid >= 0) {
+		struct proc* p = proc_table + pid_chlid;
+		if (p->p_flags & HANGING) {
+			cleanup(p);
+			return;
+		}
+		else if (p->p_flags != FREE_SLOT) {
+			/* has children, but no child is HANGING */
+			proc_table[pid].p_flags |= WAITING;
+		}
+		else {
+			/* no child at all */
+			MESSAGE msg;
+			msg.type = SYSCALL_RET;
+			msg.PID = NO_TASK;
+			send_recv(SEND, pid, &msg);
 		}
 	}
-
-	if (children) {
-		/* has children, but no child is HANGING */
-		proc_table[pid].p_flags |= WAITING;
-	}
 	else {
-		/* no child at all */
-		MESSAGE msg;
-		msg.type = SYSCALL_RET;
-		msg.PID = NO_TASK;
-		send_recv(SEND, pid, &msg);
+		int children = 0;
+		struct proc* p_proc = proc_table;
+		for (i = 0; i < NR_TASKS + NR_PROCS; i++,p_proc++) {
+			if (p_proc->p_parent == pid) {
+				children++;
+				if (p_proc->p_flags & HANGING) {
+					cleanup(p_proc);
+					return;
+				}
+			}
+		}
+
+		if (children) {
+			/* has children, but no child is HANGING */
+			proc_table[pid].p_flags |= WAITING;
+		}
+		else {
+			/* no child at all */
+			MESSAGE msg;
+			msg.type = SYSCALL_RET;
+			msg.PID = NO_TASK;
+			send_recv(SEND, pid, &msg);
+		}
 	}
 }

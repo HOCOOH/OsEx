@@ -299,9 +299,10 @@ void shabby_shell(const char * tty_name)
 			close(fd);
 			int pid = fork();
 			if (pid != 0) { /* parent */
+				printf("[parent is running, child pid:%d]\n", pid);
 				if (!concurrency_flag) {
 					int s;
-					wait(&s);
+					wait(&s, pid);
 				}
 			}
 			else {	/* child */
@@ -335,7 +336,7 @@ void Init()
 	untar("/cmd.tar");
 			
 
-	char * tty_list[] = {"/dev_tty1", "/dev_tty2"};
+	char * tty_list[] = {"/dev_tty0"};
 
 	int i;
 	for (i = 0; i < sizeof(tty_list) / sizeof(tty_list[0]); i++) {
@@ -355,7 +356,7 @@ void Init()
 
 	while (1) {
 		int s;
-		int child = wait(&s);
+		int child = wait(&s, -1);
 		printf("child (%d) exited with status: %d.\n", child, s);
 	}
 

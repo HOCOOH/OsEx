@@ -133,7 +133,7 @@ PUBLIC int	fork		();
 PUBLIC void	exit		(int status);
 
 /* lib/wait.c */
-PUBLIC int	wait		(int * status);
+PUBLIC int	wait		(int * status, int pid);
 
 /* lib/exec.c */
 PUBLIC int	exec		(const char * path);
