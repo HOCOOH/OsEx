@@ -60,6 +60,7 @@ PUBLIC int do_exec()
 	close(fd);
 
 	/* overwrite the current proc image with the new one */
+	/* note: multitask shell need  */
 	Elf32_Ehdr* elf_hdr = (Elf32_Ehdr*)(mmbuf);
 	int i;
 	for (i = 0; i < elf_hdr->e_phnum; i++) {
@@ -81,7 +82,7 @@ PUBLIC int do_exec()
 	phys_copy((void*)va2la(TASK_MM, stackcopy),
 		  (void*)va2la(src, mm_msg.BUF),
 		  orig_stack_len);
-
+	/* note:  */
 	u8 * orig_stack = (u8*)(PROC_IMAGE_SIZE_DEFAULT - PROC_ORIGIN_STACK);
 
 	int delta = (int)orig_stack - (int)mm_msg.BUF;
@@ -101,6 +102,7 @@ PUBLIC int do_exec()
 	proc_table[src].regs.eax = (u32)orig_stack; /* argv */
 
 	/* setup eip & esp */
+	/* note:  */
 	proc_table[src].regs.eip = elf_hdr->e_entry; /* @see _start.asm */
 	proc_table[src].regs.esp = PROC_IMAGE_SIZE_DEFAULT - PROC_ORIGIN_STACK;
 
