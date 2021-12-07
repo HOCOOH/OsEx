@@ -42,8 +42,8 @@ PUBLIC int kernel_main()
 
 	/* prco schudule */
 	mfqs_queue[0].time_slot = 2;
-	mfqs_queue[1].time_slot = 2;
-	mfqs_queue[2].time_slot = 2;
+	mfqs_queue[1].time_slot = 4;
+	mfqs_queue[2].time_slot = 8;
 	int k = 0;
 	for (; k < 3; k++) {
 		mfqs_queue[k].front = 0;
@@ -203,7 +203,6 @@ void untar(const char * filename)
 
 	while (1) {
 		read(fd, buf, SECTOR_SIZE);
-		// if (buf[0] == 0 || buf[0] == 'p')
 		if (buf[0] == 0)
 			break;
 
@@ -282,6 +281,12 @@ void shabby_shell(const char * tty_name)
 		} while(ch);
 		argv[argc] = 0;
 
+		int concurrency_flag = 0;
+		if (argv[argc - 1][0] == '&') {
+			argv[--argc] = 0;
+			concurrency_flag = 1;
+		}
+
 		int fd = open(argv[0], O_RDWR);
 		if (fd == -1) {
 			if (rdbuf[0]) {
@@ -294,8 +299,10 @@ void shabby_shell(const char * tty_name)
 			close(fd);
 			int pid = fork();
 			if (pid != 0) { /* parent */
-				int s;
-				wait(&s);
+				if (!concurrency_flag) {
+					int s;
+					wait(&s);
+				}
 			}
 			else {	/* child */
 				execv(argv[0], argv);
