@@ -192,6 +192,9 @@ PUBLIC void do_exit(int status)
 
 	p->exit_status = status;
 
+	/* dequeue this proc */
+	remove(pid);
+
 	if (proc_table[parent_pid].p_flags & WAITING) { /* parent is waiting */
 		proc_table[parent_pid].p_flags &= ~WAITING;
 		cleanup(&proc_table[pid]);

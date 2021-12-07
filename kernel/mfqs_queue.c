@@ -39,3 +39,23 @@ PUBLIC int dequeue(int queue_num, int* p_pid) {
     q->front = NEXT(q->front);
     return 0;
 }
+
+PUBLIC int remove(int pid) {
+    int queue_id = proc_table[pid].current_queue;
+    struct proc_queue* q = mfqs_queue + queue_id;
+    int i;
+    for (i = q->front; i != q->rear; i = NEXT(i)) {
+        if (q->proc_pid[i] == pid) {
+            break;
+        }
+    }
+    if (i != q->rear) {
+        assert(pid == q->proc_pid[i]);
+        for ( ; i != q->front; i = PREVIOUS(i)) {
+            q->proc_pid[i] = q->proc_pid[PREVIOUS(i)];
+        }
+        q->front = NEXT(q->front);
+        return 0;
+    }
+    return 1;
+}
