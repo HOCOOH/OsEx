@@ -99,7 +99,7 @@ struct inode {
  * @brief Max len of a filename
  * @see   dir_entry
  */
-#define	MAX_FILENAME_LEN	12
+#define	MAX_FILENAME_LEN	20
 #define MAX_FILE_NUM 100
 
 /**

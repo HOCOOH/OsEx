@@ -142,6 +142,8 @@ PUBLIC int do_list() // path = "/"
 	//char files[MAX_FILE_NUM][MAX_FILENAME_LEN];
 	int file_cnt = 0;
 	int i, j;
+	// char filenames[MAX_FILE_NUM][MAX_FILENAME_LEN];
+	// char pathname[20] = "ls_buffer";
 
 	struct inode * dir_inode = root_inode;
 
@@ -180,6 +182,21 @@ PUBLIC int do_list() // path = "/"
 		printx("  ");
 	}
 
+	// fs_msg.type	= OPEN;
+	// fs_msg.PATHNAME	= (void*)pathname;
+	// fs_msg.FLAGS	=  O_RDWR;
+	// fs_msg.NAME_LEN	= strlen(pathname);
+	// assert(fd_msg)
+	// fs_msg.FD = do_open();
+	// if (fs_msg.FD == -1) {
+	// 	fs_msg.FLAGS	= O_CREAT | O_RDWR;
+	// 	fs_msg.FD = do_open();
+	// }
+	// assert(fs_msg.FD != -1);
+
+	// fs_msg.type   = CLOSE;
+	// fs_msg.RETVAL = do_close();
+	
 	return file_cnt;
 }
 

@@ -353,6 +353,11 @@ void Init()
 			assert(0);
 		}
 	}
+	
+	// MESSAGE msg;
+
+	// msg.type	= PRINT_FILE;
+	// send_recv(BOTH, TASK_SYS, &msg);
 
 	while (1) {
 		int s;

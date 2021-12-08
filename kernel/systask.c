@@ -58,12 +58,35 @@ PUBLIC void task_sys()
 				  sizeof(t));
 			send_recv(SEND, src, &msg);
 			break;
+		// case PRINT_FILE:
+		// 	do_print_file();
+		// 	msg.type = SYSCALL_RET;
+		// 	send_recv(SEND, src, &msg);
+		// 	break;
 		default:
 			panic("unknown msg type");
 			break;
 		}
 	}
 }
+
+// PUBLIC int do_print_file() {
+// 	// open
+// 	MESSAGE msg;
+// 	char pathname[20] = "files";
+
+// 	msg.type	= OPEN;
+// 	msg.PATHNAME	= (void*)pathname;
+// 	msg.FLAGS	= O_CREAT | O_RDWR;
+// 	msg.NAME_LEN	= strlen(pathname);
+
+// 	send_recv(BOTH, TASK_FS, &msg);
+	
+// 	assert(msg.type == SYSCALL_RET);
+// 	assert(msg.FD != -1);
+
+// 	return 0;
+// }
 
 
 /*****************************************************************************
