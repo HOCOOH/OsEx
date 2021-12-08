@@ -54,6 +54,7 @@ PUBLIC void spurious_irq(int irq);
 PUBLIC void clock_handler(int irq);
 PUBLIC void init_clock();
 PUBLIC void milli_delay(int milli_sec);
+PUBLIC void sec_delay(int sec);
 
 /* kernel/hd.c */
 PUBLIC void task_hd();

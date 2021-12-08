@@ -117,6 +117,10 @@ PUBLIC void schedule_mfqs() {
 		}
 		assert(pid_expected >= NR_TASKS);
 		p_proc_ready = proc_table + pid_expected;
+		// char info[STR_DEFAULT_LEN];
+		// int text_color = MAKE_COLOR(GREEN, RED);
+		// sprintf(info, "%d\n", proc2pid(p_proc_ready));
+		// disp_color_str(info, text_color);
 		// dump_queue();
 		// bb;
 	}

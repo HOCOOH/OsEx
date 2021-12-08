@@ -75,7 +75,7 @@ PUBLIC int kernel_main()
 		strcpy(p->name, t->name);	/* name of the process */
 		p->p_parent = NO_TASK;
 
-		if (strcmp(t->name, "INIT") != 0) {
+		if (strcmp(t->name, "INIT") != 0 && strcmp(t->name, "TestA") != 0) {
 		// if (i != 5) {
 			p->ldts[INDEX_LDT_C]  = gdt[SELECTOR_KERNEL_CS >> 3];
 			p->ldts[INDEX_LDT_RW] = gdt[SELECTOR_KERNEL_DS >> 3];
@@ -392,16 +392,19 @@ void Init()
  *======================================================================*/
 void TestA()
 {
-// 	milli_delay(100000);
-// 	int pid = fork();
-// 	if (pid != 0) {	// parent proc
-// 		int ret;
-// 		wait(&ret, pid);
-// 	}
-// 	else {
-// 		milli_delay(10000);
-// 		exit(0);
-// 	}
+	// sec_delay(100);
+	// printl("fuck\n");
+	// int pid = fork();
+	// if (pid != 0) {	// parent proc
+	// printl("asshole\n");
+	// 	int ret;
+	// 	// wait(&ret, pid);
+	// }
+	// else {
+	// 	// sec_delay(100);
+	// 	printl("fuck me\n");
+	// 	exit(0);
+	// }
 
 	for(;;);
 }

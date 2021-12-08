@@ -15,7 +15,7 @@ PUBLIC int enqueue(int queue_num, int pid, int time_remain) {
     struct proc* p = proc_table + pid;
     struct proc_queue* q = mfqs_queue + queue_num;
     p->current_queue = queue_num;
-    if (time_remain) {
+    if (time_remain > 0) {
         p->time_remain = time_remain;
     }
     else {
