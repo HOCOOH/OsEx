@@ -62,6 +62,10 @@ PUBLIC void task_fs()
 		case UNLINK:
 			fs_msg.RETVAL = do_unlink();
 			break;
+		case LIST:
+			fs_msg.CNT = do_list();
+			fs_msg.BUF = filenames[0];
+			break;
 		case RESUME_PROC:
 			src = fs_msg.PROC_NR;
 			break;
@@ -101,6 +105,8 @@ PUBLIC void task_fs()
 				      msg_name[msgtype], src);
 			//panic("");
 		case OPEN:
+		case LIST:
+			break;
 		case CLOSE:
 		case READ:
 		case WRITE:

@@ -100,6 +100,7 @@ struct inode {
  * @see   dir_entry
  */
 #define	MAX_FILENAME_LEN	12
+#define MAX_FILE_NUM 100
 
 /**
  * @struct dir_entry

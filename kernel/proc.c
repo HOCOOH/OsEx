@@ -201,6 +201,15 @@ PUBLIC int sys_sendrec(int function, int src_dest, MESSAGE* m, struct proc* p)
 	return 0;
 }
 
+PUBLIC int sys_getallfiles(char *filename, struct dir_entry * pde) {
+	
+	int i;
+	for (i = 0; i < MAX_FILENAME_LEN;i++) {
+		filename[i] = pde->name[i];
+	}
+	return 0;
+}
+
 /*****************************************************************************
  *				  ldt_seg_linear
  *****************************************************************************/

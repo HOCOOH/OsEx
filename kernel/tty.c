@@ -53,6 +53,7 @@
 
 #define TTY_FIRST	(tty_table)
 #define TTY_END		(tty_table + NR_CONSOLES)
+#define TTY_CURRENT	(tty_table[tty_current])
 
 
 PRIVATE void	init_tty	(TTY* tty);
@@ -201,6 +202,7 @@ PUBLIC void in_process(TTY* tty, u32 key)
 			if ((key & FLAG_CTRL_L) ||
 			    (key & FLAG_CTRL_R)) {	/* Alt + F1~F12 */
 				select_console(raw_code - F1);
+				tty_current = raw_code - F1;
 			}
 			break;
 		default:
@@ -447,7 +449,7 @@ PUBLIC int sys_printx(int _unused1, int _unused2, char* s, struct proc* p_proc)
 		/* TTY * ptty; */
 		/* for (ptty = TTY_FIRST; ptty < TTY_END; ptty++) */
 		/* 	out_char(ptty->console, ch); /\* output chars to all TTYs *\/ */
-		out_char(TTY_FIRST->console, ch);
+		out_char(TTY_CURRENT.console, ch);
 	}
 
 	//__asm__ __volatile__("nop;jmp 1f;ud2;1: nop");

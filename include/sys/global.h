@@ -71,3 +71,6 @@ extern struct proc_queue mfqs_queue[NR_PROC_QUEUE];
 
 extern int task_run_flag;
 extern int proc_ticks;
+
+EXTERN char filenames[MAX_FILE_NUM][MAX_FILENAME_LEN];
+EXTERN int tty_current;

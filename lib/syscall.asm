@@ -10,10 +10,12 @@
 INT_VECTOR_SYS_CALL equ 0x90
 _NR_printx	    equ 0
 _NR_sendrec	    equ 1
+_NR_getallfiles equ 2
 
 ; 导出符号
 global	printx
 global	sendrec
+global 	getallfiles
 
 bits 32
 [section .text]
@@ -50,6 +52,24 @@ printx:
 	int	INT_VECTOR_SYS_CALL
 
 	pop	edx
+
+	ret
+
+; ====================================================================================
+;                          int getallfiles(char* filename, struct dir_entry* pde);
+; ====================================================================================
+
+getallfiles:
+	push	ebx		; .
+	push	ecx		;  
+
+	mov	eax, _NR_getallfiles
+	mov	ebx, [esp + 8 +  4]	; file_cnt
+	mov	ecx, [esp + 8 +  8]	; pde
+	int	INT_VECTOR_SYS_CALL
+
+	pop	ecx
+	pop	ebx
 
 	ret
 
