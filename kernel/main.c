@@ -40,12 +40,21 @@ PUBLIC int kernel_main()
 
 	char * stk = task_stack + STACK_SIZE_TOTAL;
 
-	/* prco schudule */
-	mfqs_queue[0].time_slot = 2;
-	mfqs_queue[1].time_slot = 4;
-	mfqs_queue[2].time_slot = 8;
+	/* proc schudule */
+#ifdef PROC_DISPLAY
+	mfqs_queue[0].time_slot = 20;
+	mfqs_queue[1].time_slot = 10;
+	mfqs_queue[2].time_slot = 30;
+	mfqs_queue[3].time_slot = 50;
+#else
+	mfqs_queue[0].time_slot = 20;
+	mfqs_queue[1].time_slot = 2;
+	mfqs_queue[2].time_slot = 4;
+	mfqs_queue[3].time_slot = 8;
+#endif
+
 	int k = 0;
-	for (; k < 3; k++) {
+	for (; k < NR_PROC_QUEUE; k++) {
 		mfqs_queue[k].front = 0;
 		mfqs_queue[k].rear = 0;
 	}
@@ -62,6 +71,7 @@ PUBLIC int kernel_main()
 			rpl     = RPL_TASK;
 			eflags  = 0x1202;/* IF=1, IOPL=1, bit 2 is always 1 */
 			prio    = 15;
+			enqueue(TASK_INIT_QUEUE, i, TICKS_DEFAULT);
 		} 
 		else {                  /* USER PROC */
 			t	= user_proc_table + (i - NR_TASKS);
@@ -69,14 +79,13 @@ PUBLIC int kernel_main()
 			rpl     = RPL_USER;
 			eflags  = 0x202;	/* IF=1, bit 2 is always 1 */
 			prio    = 5;
-			enqueue(0, i, 0);
+			enqueue(PROC_INIT_QUEUE, i, TICKS_DEFAULT);
 		}
 
 		strcpy(p->name, t->name);	/* name of the process */
 		p->p_parent = NO_TASK;
 		// only for display
 		p->arrive_time = 0;
-		p->is_executed = 0;
 		p->start_time = 0;
 		p->end_time = 0;
 
@@ -337,27 +346,27 @@ void Init()
 	printf("Init() is running ...\n");
 
 	/* extract `cmd.tar' */
-	// untar("/cmd.tar");
+	untar("/cmd.tar");
 			
 
 	// // char * tty_list[] = {"/dev_tty0"};
-	// char * tty_list[] = {"/dev_tty1", "/dev_tty2"};
+	char * tty_list[] = {"/dev_tty1", "/dev_tty2"};
 
-	// int i;
-	// for (i = 0; i < sizeof(tty_list) / sizeof(tty_list[0]); i++) {
-	// 	int pid = fork();
-	// 	if (pid != 0) { /* parent process */
-	// 		printf("[parent is running, child pid:%d]\n", pid);
-	// 	}
-	// 	else {	/* child process */
-	// 		printf("[child is running, pid:%d]\n", getpid());
-	// 		close(fd_stdin);
-	// 		close(fd_stdout);
+	int i;
+	for (i = 0; i < sizeof(tty_list) / sizeof(tty_list[0]); i++) {
+		int pid = fork();
+		if (pid != 0) { /* parent process */
+			printf("[parent is running, child pid:%d]\n", pid);
+		}
+		else {	/* child process */
+			printf("[child is running, pid:%d]\n", getpid());
+			close(fd_stdin);
+			close(fd_stdout);
 			
-	// 		shabby_shell(tty_list[i]);
-	// 		assert(0);
-	// 	}
-	// }
+			shabby_shell(tty_list[i]);
+			assert(0);
+		}
+	}
 	
 	// MESSAGE msg;
 
@@ -373,36 +382,12 @@ void Init()
 	assert(0);
 }
 
-// /*======================================================================*
-//                                TestA
-//  *======================================================================*/
-// void TestA()
-// {
-// 	for(;;);
-// }
-
-// /*======================================================================*
-//                                TestB
-//  *======================================================================*/
-// void TestB()
-// {
-// 	for(;;);
-// }
-
-// /*======================================================================*
-//                                TestB
-//  *======================================================================*/
-// void TestC()
-// {
-// 	for(;;);
-// }
-
 /*======================================================================*
                                TestA
  *======================================================================*/
 void TestA()
 {
-	sec_delay(50);
+	sec_delay(1000);
 	int i;
 	int pids[5];
 	MESSAGE msg;
@@ -410,26 +395,25 @@ void TestA()
 	for (i = 0; i < 5; i ++) {
 		pids[i] = fork();
 		if (pids[i] != 0) {	// parent proc
-			sec_delay(10);
+			// sec_delay(10);
 		}
 		else {			// chlid proc
+			inform_start();
+
 			printl("[child is running, pid:%d]\n", getpid());
 
-			sec_delay(15);
+			test_delay(200);
+			// sec_delay(5);
 
-			msg.type = PROC_END;
-			send_recv(BOTH, TASK_SYS, &msg);
-			assert(msg.type == SYSCALL_RET);
+			inform_end();
 
 			exit(0);
 		}
 	}
 
-	sec_delay(20);
+	sec_delay(1000);
 
-	msg.type = DUMP_PROC;
-	send_recv(BOTH, TASK_SYS, &msg);
-	assert(msg.type == SYSCALL_RET);
+	dump_proc_display(pids[0]);
 
 	for(;;);
 }
@@ -448,6 +432,16 @@ void TestB()
 void TestC()
 {
 	for(;;);
+}
+
+/* delay for about num ticks */
+PUBLIC void test_delay(int num) {
+	int i, j;
+	for (i = 0; i < num; i++) {
+		for (j = 0; j < 20000; j++) {
+			// empty
+		}
+	}
 }
 
 /*****************************************************************************

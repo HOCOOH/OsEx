@@ -149,5 +149,9 @@ PUBLIC	int	syslog		(const char *fmt, ...);
 /* lib/misc.c */
 PUBLIC int listfile();
 
+/* lib/proc_display.c */
+PUBLIC void inform_start();
+PUBLIC void inform_end();
+PUBLIC void dump_proc_display(int pid_begin);
 
 #endif /* _ORANGES_STDIO_H_ */

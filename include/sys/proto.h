@@ -43,6 +43,7 @@ PUBLIC int  get_ticks();
 PUBLIC void TestA();
 PUBLIC void TestB();
 PUBLIC void TestC();
+PUBLIC void test_delay(int num);
 PUBLIC void panic(const char *fmt, ...);
 
 /* i8259.c */
@@ -139,8 +140,8 @@ PUBLIC void	inform_int(int task_nr);
 PUBLIC void spin(char * func_name);
 
 /* kernel/mfqs_queue.c */
-PUBLIC int enqueue(int queue_num, int pid, int time_remain);
-PUBLIC int dequeue(int queue_num, int* p_pid);
+PUBLIC int enqueue(int queue_id, int pid, int time_remain);
+PUBLIC int dequeue(int queue_id, int* p_pid);
 PUBLIC int remove(int pid);
 
 /* 以下是系统调用相关 */

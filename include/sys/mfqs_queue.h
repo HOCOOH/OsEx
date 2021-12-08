@@ -4,6 +4,11 @@
 #define NEXT(x) ((x + 1) % NR_PROC_IN_QUEUE)
 #define PREVIOUS(x) ((x - 1 + NR_PROC_IN_QUEUE) % NR_PROC_IN_QUEUE)
 
+#define TASK_INIT_QUEUE 0
+#define PROC_INIT_QUEUE 1
+
+#define TICKS_DEFAULT 0
+
 struct proc_queue {
     int proc_pid[NR_PROC_IN_QUEUE];
     int front;

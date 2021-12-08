@@ -117,7 +117,6 @@ PUBLIC int do_fork()
 
 	/* only for display */
 	p->arrive_time = ticks;
-	p->is_executed = 0;
 
 	/* tell FS, see fs_fork() */
 	MESSAGE msg2fs;

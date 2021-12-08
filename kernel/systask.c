@@ -23,7 +23,7 @@
 
 PRIVATE int read_register(char reg_addr);
 PRIVATE u32 get_rtc_time(struct time *t);
-PRIVATE void do_dump_proc();
+PRIVATE void do_dump_proc(int pid_begin);
 
 /*****************************************************************************
  *                                task_sys
@@ -59,13 +59,18 @@ PUBLIC void task_sys()
 				  sizeof(t));
 			send_recv(SEND, src, &msg);
 			break;
+		case PROC_START:
+			msg.type = SYSCALL_RET;
+			proc_table[src].start_time = ticks;
+			send_recv(SEND, src, &msg);
+			break;
 		case PROC_END:
 			msg.type = SYSCALL_RET;
 			proc_table[src].end_time = ticks;
 			send_recv(SEND, src, &msg);
 			break;
 		case DUMP_PROC:
-			do_dump_proc();
+			do_dump_proc(msg.PID);
 			msg.type = SYSCALL_RET;
 			send_recv(SEND, src, &msg);
 			break;
@@ -149,13 +154,13 @@ PRIVATE int read_register(char reg_addr)
 }
 
 
-PRIVATE void do_dump_proc() {
+PRIVATE void do_dump_proc(int pid_begin) {
 	printl("|-------------------------------------------------|\n");
 	printl("| proc_name | pid | arrive| start |  end  |cycling|\n");
 
 	int i;
 	struct proc* p;
-	for (i = 9; i < 14; i++) {
+	for (i = pid_begin; i < pid_begin + 5; i++) {
 		p = proc_table + i;
 		assert(p->p_flags & HANGING);
 		printl("|-------------------------------------------------|\n");

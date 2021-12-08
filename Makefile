@@ -45,7 +45,7 @@ LOBJS		=  lib/syscall.o\
 			lib/open.o lib/read.o lib/write.o lib/close.o lib/unlink.o\
 			lib/getpid.o lib/stat.o\
 			lib/fork.o lib/exit.o lib/wait.o lib/exec.o \
-			lib/listfile.o
+			lib/listfile.o lib/proc_display.o
 DASMOUTPUT	= kernel.bin.asm
 
 # All Phony Targets
@@ -214,4 +214,10 @@ fs/disklog.o: fs/disklog.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 kernel/mfqs_queue.o : kernel/mfqs_queue.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+lib/listfile.o: lib/listfile.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+lib/proc_display.o: lib/proc_display.c
 	$(CC) $(CFLAGS) -o $@ $<
