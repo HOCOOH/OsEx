@@ -144,7 +144,7 @@
 #define	MAX_TICKS	0x7FFFABCD
 
 /* system call */
-#define NR_SYS_CALL	3
+#define NR_SYS_CALL	4
 
 /* ipc */
 #define SEND		1
@@ -167,10 +167,10 @@ enum msgtype {
 	HARD_INT = 1,
 
 	/* SYS task */
-	GET_TICKS, GET_PID, GET_RTC_TIME,
+	GET_TICKS, GET_PID, GET_RTC_TIME, PRINT_FILE, 
 
 	/* FS */
-	OPEN, CLOSE, READ, WRITE, LSEEK, STAT, UNLINK,
+	OPEN, CLOSE, READ, WRITE, LSEEK, STAT, UNLINK, LIST, 
 
 	/* FS & TTY */
 	SUSPEND_PROC, RESUME_PROC,

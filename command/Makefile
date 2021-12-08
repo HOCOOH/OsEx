@@ -12,7 +12,7 @@ CFLAGS		= -I ../include/ -c -fno-builtin -fno-stack-protector -Wall
 LDFLAGS		= -Ttext 0x1000
 DASMFLAGS	= -D
 LIB		= ../lib/orangescrt.a
-BIN		= echo pwd delay_echo
+BIN		= echo pwd delay_echo cat touch ls rm
 
 # All Phony Targets
 .PHONY : everything final clean realclean disasm all install
@@ -57,4 +57,25 @@ delay_echo.o: delay_echo.c ../include/type.h ../include/stdio.h
 	$(CC) $(CFLAGS) -o $@ $<
 
 delay_echo : delay_echo.o start.o $(LIB)
+	$(LD) $(LDFLAGS) -o $@ $?
+
+cat.o: cat.c ../include/type.h ../include/stdio.h
+	$(CC) $(CFLAGS) -o $@ $<
+
+cat : cat.o start.o $(LIB)
+	$(LD) $(LDFLAGS) -o $@ $?
+touch.o: touch.c ../include/type.h ../include/stdio.h
+	$(CC) $(CFLAGS) -o $@ $<
+
+touch : touch.o start.o $(LIB)
+	$(LD) $(LDFLAGS) -o $@ $?
+ls.o: ls.c ../include/type.h ../include/stdio.h
+	$(CC) $(CFLAGS) -o $@ $<
+
+ls : ls.o start.o $(LIB)
+	$(LD) $(LDFLAGS) -o $@ $?
+
+rm.o: rm.c ../include/type.h ../include/stdio.h
+	$(CC) $(CFLAGS) -o $@ $<
+rm : rm.o start.o $(LIB)
 	$(LD) $(LDFLAGS) -o $@ $?

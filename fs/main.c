@@ -40,6 +40,11 @@ PUBLIC void task_fs()
 	printl("{FS} Task FS begins.\n");
 
 	init_fs();
+	// int i;
+	// int cnt;
+	// int len;
+	// char pathname[20] = "ls_buffer";
+	// char ttt[20] = "qweasd";
 
 	while (1) {
 		send_recv(RECEIVE, ANY, &fs_msg);
@@ -61,6 +66,55 @@ PUBLIC void task_fs()
 			break;
 		case UNLINK:
 			fs_msg.RETVAL = do_unlink();
+			break;
+		case LIST:
+			fs_msg.CNT = do_list();
+			// cnt = fs_msg.CNT;
+			// cnt = 5;
+
+			// fs_msg.type	= OPEN;
+			// fs_msg.PATHNAME	= (void*)pathname;
+			// fs_msg.FLAGS	=  O_RDWR;
+			// fs_msg.NAME_LEN	= strlen(pathname);
+			// fs_msg.FD = do_open();
+			// if (fs_msg.FD == -1) {
+			// 	fs_msg.FLAGS	= O_CREAT | O_RDWR;
+			// 	fs_msg.FD = do_open();
+			// }
+			// assert(fs_msg.FD != -1);
+
+			// // for (i = 1; i < cnt; i++) {
+			// // 	fs_msg.type = WRITE;
+			// // 	fs_msg.BUF  = (void*)filenames[i];
+			// // 	len = strlen(filenames[i]);
+			// // 	fs_msg.CNT = len;
+			// // 	assert(filenames[i][0] != 0);
+			// // 	assert(fs_msg.CNT);
+			// // 	filenames[i][len] = ' ';
+			// // 	len++;
+			// // 	filenames[i][len] = 0;
+			// // 	fs_msg.CNT = do_rdwt();
+			// // 	assert(fs_msg.CNT);
+			// // }
+			// // bb;
+			// // phys_copy(va2la(TASK_FS, ttt), filenames[1],
+			// //   10);
+			// fs_msg.type = WRITE;
+			// fs_msg.BUF  = (void*)ttt;
+			// len = strlen(ttt);
+			// fs_msg.CNT = len;
+			// assert(ttt[0] != 0);
+			// assert(fs_msg.CNT);
+			// // filenames[1][len] = ' ';
+			// // len++;
+			// // filenames[1][len] = 0;
+			// fs_msg.CNT = do_rdwt();
+			// assert(fs_msg.CNT);
+
+			// // close
+			// fs_msg.type   = CLOSE;
+			// fs_msg.RETVAL = do_close();
+			// // bb;
 			break;
 		case RESUME_PROC:
 			src = fs_msg.PROC_NR;
@@ -101,6 +155,8 @@ PUBLIC void task_fs()
 				      msg_name[msgtype], src);
 			//panic("");
 		case OPEN:
+		case LIST:
+			break;
 		case CLOSE:
 		case READ:
 		case WRITE:

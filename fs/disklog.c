@@ -288,7 +288,7 @@ PUBLIC void dump_fd_graph(const char * fmt, ...)
 	i = vsprintf(title, fmt, arg);
 	assert(strlen(title) == i);
 
-	printl("dump_fd_graph: %s\n", title);
+	// printl("dump_fd_graph: %s\n", title);
 
 	struct proc* p_proc;
 
@@ -296,7 +296,7 @@ PUBLIC void dump_fd_graph(const char * fmt, ...)
 
 	/* assert(getpid() == TASK_MM); */
 
-	printl("<|");
+	// printl("<|");
 
 	disable_int();
 
@@ -374,7 +374,7 @@ PUBLIC void dump_fd_graph(const char * fmt, ...)
 		int dir;
 	} msd[256];
 	int msd_idx = 0;
-	printl("|_|");
+	// printl("|_|");
 
 	/* head */
 	logbufpos += sprintf(logbuf + logbufpos,
@@ -472,7 +472,7 @@ PUBLIC void dump_fd_graph(const char * fmt, ...)
 	logbufpos += sprintf(logbuf + logbufpos, "\t}\n");
 #endif
 
-	printl("0");
+	// printl("0");
 
 #if (LOG_FD_TABLE == 1)
 	logbufpos += sprintf(logbuf + logbufpos, "\n\tsubgraph cluster_1 {\n");
@@ -504,7 +504,7 @@ PUBLIC void dump_fd_graph(const char * fmt, ...)
 	logbufpos += sprintf(logbuf + logbufpos, "\t}\n");
 #endif
 
-	printl("1");
+	// printl("1");
 
 #if (LOG_INODE_TABLE == 1)
 	logbufpos += sprintf(logbuf + logbufpos, "\n\tsubgraph cluster_2 {\n");
@@ -538,7 +538,7 @@ PUBLIC void dump_fd_graph(const char * fmt, ...)
 	logbufpos += sprintf(logbuf + logbufpos, "\t}\n");
 #endif
 
-	printl("2");
+	// printl("2");
 
 	enable_int();
 
@@ -590,7 +590,7 @@ PUBLIC void dump_fd_graph(const char * fmt, ...)
 	logbufpos += sprintf(logbuf + logbufpos, "\t}\n");
 #endif
 
-	printl("3");
+	// printl("3");
 
 #if (LOG_IMAP == 1)
 	logbufpos += sprintf(logbuf + logbufpos, "\n\tsubgraph cluster_4 {\n");
@@ -621,7 +621,7 @@ PUBLIC void dump_fd_graph(const char * fmt, ...)
 	logbufpos += sprintf(logbuf + logbufpos, "\t}\n");
 #endif
 
-	printl("4");
+	// printl("4");
 
 #if (LOG_INODE_ARRAY == 1)
 	logbufpos += sprintf(logbuf + logbufpos, "\n\tsubgraph cluster_5 {\n");
@@ -681,7 +681,7 @@ PUBLIC void dump_fd_graph(const char * fmt, ...)
 	logbufpos += sprintf(logbuf + logbufpos, "\t}\n");
 #endif
 
-	printl("5");
+	// printl("5");
 
 #if (LOG_ROOT_DIR == 1)
 	logbufpos += sprintf(logbuf + logbufpos, "\n\tsubgraph cluster_6 {\n");
@@ -732,7 +732,7 @@ PUBLIC void dump_fd_graph(const char * fmt, ...)
 	logbufpos += sprintf(logbuf + logbufpos, "\t}\n");
 #endif
 
-	printl("6");
+	// printl("6");
 
 #if (LOG_MSG_SRC2DST == 1)
 	for (i = 0; i < msd_idx; i++) {
@@ -830,7 +830,7 @@ PUBLIC void dump_fd_graph(const char * fmt, ...)
 	}
 	enable_int();
 
-	printl("|>");
+	// printl("|>");
 
 	/* int pos = logbufpos += sprintf(logbuf + logbufpos, "--separator--\n"); */
 	/* printl("dump_fd_graph(%s)::logbufpos:%d\n", title, logbufpos); */

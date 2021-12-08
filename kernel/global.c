@@ -54,7 +54,7 @@ PUBLIC	CONSOLE		console_table[NR_CONSOLES];
 PUBLIC	irq_handler	irq_table[NR_IRQ];
 
 PUBLIC	system_call	sys_call_table[NR_SYS_CALL] = {sys_printx,
-						       sys_sendrec};
+						       sys_sendrec, sys_getallfiles, sys_get_ticks_syscall};
 
 /* FS related below */
 /*****************************************************************************/
@@ -103,3 +103,6 @@ PUBLIC struct proc_queue mfqs_queue[NR_PROC_QUEUE] = {
 
 PUBLIC int task_run_flag = 1;
 PUBLIC int proc_ticks = 0;
+
+PUBLIC char filenames[MAX_FILE_NUM][MAX_FILENAME_LEN];
+PUBLIC int tty_current;

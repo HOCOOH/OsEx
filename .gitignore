@@ -1,7 +1,3 @@
-!*.c
-!*.asm
-!*/Makefile
-
 *.o
 *.a
 *.bin
@@ -11,4 +7,11 @@ krnl.map
 bochsout.txt
 
 .vscode/
-command/
+# command/
+echo
+pwd
+delay_echo
+ls
+touch
+rm
+cat

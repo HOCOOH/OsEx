@@ -135,6 +135,71 @@ PUBLIC int search_file(char * path)
 	return 0;
 }
 
+PUBLIC int do_list() // path = "/"
+{
+	// bb;
+	//BREAK_POINT
+	//char files[MAX_FILE_NUM][MAX_FILENAME_LEN];
+	int file_cnt = 0;
+	int i, j;
+	// char filenames[MAX_FILE_NUM][MAX_FILENAME_LEN];
+	// char pathname[20] = "ls_buffer";
+
+	struct inode * dir_inode = root_inode;
+
+	int dir_blk0_nr = dir_inode->i_start_sect;
+	int nr_dir_blks = (dir_inode->i_size + SECTOR_SIZE - 1) / SECTOR_SIZE;
+	int nr_dir_entries =
+	  dir_inode->i_size / DIR_ENTRY_SIZE; /**
+					       * including unused slots
+					       * (the file has been deleted
+					       * but the slot is still there)
+					       */
+	//BREAK_POINT
+	int m = 0;
+	struct dir_entry * pde;
+	for (i = 0; i < nr_dir_blks; i++) {
+		RD_SECT(dir_inode->i_dev, dir_blk0_nr + i);
+		pde = (struct dir_entry *)fsbuf;
+		
+		for (j = 0; j < SECTOR_SIZE / DIR_ENTRY_SIZE; j++,pde++) {
+		// bb;
+			getallfiles(filenames[file_cnt], pde);
+			// bb;
+			if (filenames[file_cnt][0] == '\x00')
+				goto out;
+			file_cnt++;
+			if (++m > nr_dir_entries)
+				break;
+		}
+		if (m > nr_dir_entries) /* all entries have been iterated */
+			break;
+	}
+	out:
+
+	for (i = 1; i < file_cnt; i++) {
+		printx(filenames[i]);
+		printx("  ");
+	}
+
+	// fs_msg.type	= OPEN;
+	// fs_msg.PATHNAME	= (void*)pathname;
+	// fs_msg.FLAGS	=  O_RDWR;
+	// fs_msg.NAME_LEN	= strlen(pathname);
+	// assert(fd_msg)
+	// fs_msg.FD = do_open();
+	// if (fs_msg.FD == -1) {
+	// 	fs_msg.FLAGS	= O_CREAT | O_RDWR;
+	// 	fs_msg.FD = do_open();
+	// }
+	// assert(fs_msg.FD != -1);
+
+	// fs_msg.type   = CLOSE;
+	// fs_msg.RETVAL = do_close();
+	
+	return file_cnt;
+}
+
 /*****************************************************************************
  *                                strip_path
  *****************************************************************************/

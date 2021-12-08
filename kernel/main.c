@@ -74,8 +74,13 @@ PUBLIC int kernel_main()
 
 		strcpy(p->name, t->name);	/* name of the process */
 		p->p_parent = NO_TASK;
+		// only for display
+		p->arrive_time = 0;
+		p->is_executed = 0;
+		p->start_time = 0;
+		p->end_time = 0;
 
-		if (strcmp(t->name, "INIT") != 0) {
+		if (strcmp(t->name, "INIT") != 0 && strcmp(t->name, "TestA") != 0) {
 		// if (i != 5) {
 			p->ldts[INDEX_LDT_C]  = gdt[SELECTOR_KERNEL_CS >> 3];
 			p->ldts[INDEX_LDT_RW] = gdt[SELECTOR_KERNEL_DS >> 3];
@@ -299,7 +304,7 @@ void shabby_shell(const char * tty_name)
 			close(fd);
 			int pid = fork();
 			if (pid != 0) { /* parent */
-				printf("[parent is running, child pid:%d]\n", pid);
+				// printf("[parent is running, child pid:%d]\n", pid);
 				if (!concurrency_flag) {
 					int s;
 					wait(&s, pid);
@@ -332,11 +337,11 @@ void Init()
 	printf("Init() is running ...\n");
 
 	/* extract `cmd.tar' */
-	// milli_delay(100000);
 	untar("/cmd.tar");
 			
 
-	char * tty_list[] = {"/dev_tty0"};
+	// char * tty_list[] = {"/dev_tty0"};
+	char * tty_list[] = {"/dev_tty1", "/dev_tty2"};
 
 	int i;
 	for (i = 0; i < sizeof(tty_list) / sizeof(tty_list[0]); i++) {
@@ -353,6 +358,11 @@ void Init()
 			assert(0);
 		}
 	}
+	
+	// MESSAGE msg;
+
+	// msg.type	= PRINT_FILE;
+	// send_recv(BOTH, TASK_SYS, &msg);
 
 	while (1) {
 		int s;
@@ -363,12 +373,49 @@ void Init()
 	assert(0);
 }
 
+// /*======================================================================*
+//                                TestA
+//  *======================================================================*/
+// void TestA()
+// {
+// 	for(;;);
+// }
+
+// /*======================================================================*
+//                                TestB
+//  *======================================================================*/
+// void TestB()
+// {
+// 	for(;;);
+// }
+
+// /*======================================================================*
+//                                TestB
+//  *======================================================================*/
+// void TestC()
+// {
+// 	for(;;);
+// }
 
 /*======================================================================*
                                TestA
  *======================================================================*/
 void TestA()
 {
+	// sec_delay(100);
+	// printl("fuck\n");
+	// int pid = fork();
+	// if (pid != 0) {	// parent proc
+	// printl("asshole\n");
+	// 	int ret;
+	// 	// wait(&ret, pid);
+	// }
+	// else {
+	// 	// sec_delay(100);
+	// 	printl("fuck me\n");
+	// 	exit(0);
+	// }
+
 	for(;;);
 }
 

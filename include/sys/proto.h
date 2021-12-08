@@ -54,6 +54,7 @@ PUBLIC void spurious_irq(int irq);
 PUBLIC void clock_handler(int irq);
 PUBLIC void init_clock();
 PUBLIC void milli_delay(int milli_sec);
+PUBLIC void sec_delay(int sec);
 
 /* kernel/hd.c */
 PUBLIC void task_hd();
@@ -92,6 +93,7 @@ PUBLIC int		do_unlink();
 
 /* fs/misc.c */
 PUBLIC int		do_stat();
+PUBLIC int 		do_list();
 PUBLIC int		strip_path(char * filename, const char * pathname,
 				   struct inode** ppinode);
 PUBLIC int		search_file(char * path);
@@ -124,6 +126,7 @@ PUBLIC int  is_current_console(CONSOLE* p_con);
 /* proc.c */
 PUBLIC	void	schedule();
 PUBLIC 	void 	schedule_mfqs();
+PUBLIC void dump_queue();
 PUBLIC	void*	va2la(int pid, void* va);
 PUBLIC	int	ldt_seg_linear(struct proc* p, int idx);
 PUBLIC	void	reset_msg(MESSAGE* p);
@@ -146,6 +149,8 @@ PUBLIC int remove(int pid);
 /* proc.c */
 PUBLIC	int	sys_sendrec(int function, int src_dest, MESSAGE* m, struct proc* p);
 PUBLIC	int	sys_printx(int _unused1, int _unused2, char* s, struct proc * p_proc);
+PUBLIC int sys_getallfiles(char *filename, struct dir_entry * pde);
+PUBLIC	int sys_get_ticks_syscall();
 
 /* syscall.asm */
 PUBLIC  void    sys_call();             /* int_handler */
@@ -153,3 +158,5 @@ PUBLIC  void    sys_call();             /* int_handler */
 /* 系统调用 - 用户级 */
 PUBLIC	int	sendrec(int function, int src_dest, MESSAGE* p_msg);
 PUBLIC	int	printx(char* str);
+PUBLIC 	int getallfiles(char *filename, struct dir_entry * pde);
+PUBLIC	int get_ticks_syscall();

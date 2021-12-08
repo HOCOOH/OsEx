@@ -72,9 +72,25 @@ PUBLIC void clock_handler(int irq)
  *****************************************************************************/
 PUBLIC void milli_delay(int milli_sec)
 {
-        int t = get_ticks();
+	int t = get_ticks();
 
-        while(((get_ticks() - t) * 1000 / HZ) < milli_sec) {}
+	while(((get_ticks() - t) * 1000 / HZ) < milli_sec) {}
+}
+
+/*****************************************************************************
+ *                                milli_delay
+ *****************************************************************************/
+/**
+ * <Ring 1~3> Delay for a specified amount of time.
+ * 
+ * @param sec How many seconds to delay.
+ *****************************************************************************/
+PUBLIC void sec_delay(int sec)
+{
+
+	int t = get_ticks_syscall();
+
+	while(((get_ticks_syscall() - t)) < sec * HZ) {}
 }
 
 /*****************************************************************************
