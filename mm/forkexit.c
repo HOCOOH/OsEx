@@ -198,11 +198,11 @@ PUBLIC void do_exit(int status)
 	if (proc_table[parent_pid].p_flags & WAITING) { /* parent is waiting */
 		proc_table[parent_pid].p_flags &= ~WAITING;
 		cleanup(&proc_table[pid]);
-		printl("proc %d exit\n", pid);
+		// printl("proc %d exit\n", pid);
 	}
 	else { /* parent is not waiting */
 		proc_table[pid].p_flags |= HANGING;
-		printl("proc %d hanging\n", pid);
+		// printl("proc %d hanging\n", pid);
 	}
 
 	/* if the proc has any child, make INIT the new parent */

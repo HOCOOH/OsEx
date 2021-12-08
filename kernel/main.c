@@ -299,7 +299,7 @@ void shabby_shell(const char * tty_name)
 			close(fd);
 			int pid = fork();
 			if (pid != 0) { /* parent */
-				printf("[parent is running, child pid:%d]\n", pid);
+				// printf("[parent is running, child pid:%d]\n", pid);
 				if (!concurrency_flag) {
 					int s;
 					wait(&s, pid);
@@ -332,11 +332,11 @@ void Init()
 	printf("Init() is running ...\n");
 
 	/* extract `cmd.tar' */
-	// milli_delay(100000);
 	untar("/cmd.tar");
 			
 
-	char * tty_list[] = {"/dev_tty0"};
+	// char * tty_list[] = {"/dev_tty0"};
+	char * tty_list[] = {"/dev_tty1", "/dev_tty2"};
 
 	int i;
 	for (i = 0; i < sizeof(tty_list) / sizeof(tty_list[0]); i++) {
@@ -363,12 +363,46 @@ void Init()
 	assert(0);
 }
 
+// /*======================================================================*
+//                                TestA
+//  *======================================================================*/
+// void TestA()
+// {
+// 	for(;;);
+// }
+
+// /*======================================================================*
+//                                TestB
+//  *======================================================================*/
+// void TestB()
+// {
+// 	for(;;);
+// }
+
+// /*======================================================================*
+//                                TestB
+//  *======================================================================*/
+// void TestC()
+// {
+// 	for(;;);
+// }
 
 /*======================================================================*
                                TestA
  *======================================================================*/
 void TestA()
 {
+// 	milli_delay(100000);
+// 	int pid = fork();
+// 	if (pid != 0) {	// parent proc
+// 		int ret;
+// 		wait(&ret, pid);
+// 	}
+// 	else {
+// 		milli_delay(10000);
+// 		exit(0);
+// 	}
+
 	for(;;);
 }
 
