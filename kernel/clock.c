@@ -88,9 +88,9 @@ PUBLIC void milli_delay(int milli_sec)
 PUBLIC void sec_delay(int sec)
 {
 
-	int t = ticks;
+	int t = get_ticks_syscall();
 
-	while(((ticks - t) / HZ) < sec) {}
+	while(((get_ticks_syscall() - t)) < sec * HZ) {}
 }
 
 /*****************************************************************************

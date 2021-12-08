@@ -201,6 +201,9 @@ PUBLIC int sys_sendrec(int function, int src_dest, MESSAGE* m, struct proc* p)
 	return 0;
 }
 
+/*======================================================================*
+                           sys_getallfiles
+ *======================================================================*/
 PUBLIC int sys_getallfiles(char *filename, struct dir_entry * pde) {
 	
 	int i;
@@ -209,6 +212,15 @@ PUBLIC int sys_getallfiles(char *filename, struct dir_entry * pde) {
 	}
 	return 0;
 }
+
+/*======================================================================*
+                           sys_get_ticks_syscall
+ *======================================================================*/
+PUBLIC int sys_get_ticks_syscall()
+{
+	return ticks;
+}
+
 
 /*****************************************************************************
  *				  ldt_seg_linear
