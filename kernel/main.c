@@ -74,6 +74,11 @@ PUBLIC int kernel_main()
 
 		strcpy(p->name, t->name);	/* name of the process */
 		p->p_parent = NO_TASK;
+		// only for display
+		p->arrive_time = 0;
+		p->is_executed = 0;
+		p->start_time = 0;
+		p->end_time = 0;
 
 		if (strcmp(t->name, "INIT") != 0 && strcmp(t->name, "TestA") != 0) {
 		// if (i != 5) {
@@ -332,27 +337,27 @@ void Init()
 	printf("Init() is running ...\n");
 
 	/* extract `cmd.tar' */
-	// untar("/cmd.tar");
+	untar("/cmd.tar");
 			
 
 	// char * tty_list[] = {"/dev_tty0"};
-	// char * tty_list[] = {"/dev_tty1", "/dev_tty2"};
+	char * tty_list[] = {"/dev_tty1", "/dev_tty2"};
 
-	// int i;
-	// for (i = 0; i < sizeof(tty_list) / sizeof(tty_list[0]); i++) {
-	// 	int pid = fork();
-	// 	if (pid != 0) { /* parent process */
-	// 		printf("[parent is running, child pid:%d]\n", pid);
-	// 	}
-	// 	else {	/* child process */
-	// 		printf("[child is running, pid:%d]\n", getpid());
-	// 		close(fd_stdin);
-	// 		close(fd_stdout);
+	int i;
+	for (i = 0; i < sizeof(tty_list) / sizeof(tty_list[0]); i++) {
+		int pid = fork();
+		if (pid != 0) { /* parent process */
+			printf("[parent is running, child pid:%d]\n", pid);
+		}
+		else {	/* child process */
+			printf("[child is running, pid:%d]\n", getpid());
+			close(fd_stdin);
+			close(fd_stdout);
 			
-	// 		shabby_shell(tty_list[i]);
-	// 		assert(0);
-	// 	}
-	// }
+			shabby_shell(tty_list[i]);
+			assert(0);
+		}
+	}
 	
 	// MESSAGE msg;
 
@@ -397,19 +402,19 @@ void Init()
  *======================================================================*/
 void TestA()
 {
-	sec_delay(100);
-	printl("fuck\n");
-	int pid = fork();
-	if (pid != 0) {	// parent proc
-	printl("asshole\n");
-		int ret;
-		// wait(&ret, pid);
-	}
-	else {
-		// sec_delay(100);
-		printl("fuck me\n");
-		exit(0);
-	}
+	// sec_delay(100);
+	// printl("fuck\n");
+	// int pid = fork();
+	// if (pid != 0) {	// parent proc
+	// printl("asshole\n");
+	// 	int ret;
+	// 	// wait(&ret, pid);
+	// }
+	// else {
+	// 	// sec_delay(100);
+	// 	printl("fuck me\n");
+	// 	exit(0);
+	// }
 
 	for(;;);
 }

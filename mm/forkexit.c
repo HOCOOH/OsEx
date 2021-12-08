@@ -115,6 +115,10 @@ PUBLIC int do_fork()
 	/* enqueue child proc */
 	enqueue(0, proc2pid(p), 0);
 
+	/* only for display */
+	p->arrive_time = ticks;
+	p->is_executed = 0;
+
 	/* tell FS, see fs_fork() */
 	MESSAGE msg2fs;
 	msg2fs.type = FORK;

@@ -71,6 +71,12 @@ struct proc {
 
 	int current_queue;
 	int time_remain;
+
+	// only for display
+	int arrive_time;
+	int start_time;
+	int end_time; 
+	int is_executed;
 };
 
 struct task {

@@ -123,6 +123,11 @@ PUBLIC void schedule_mfqs() {
 		// disp_color_str(info, text_color);
 		// dump_queue();
 		// bb;
+
+		if(!p_proc_ready->is_executed) {
+			p_proc_ready->is_executed = 1;
+			p_proc_ready->start_time = ticks;
+		}
 	}
 }
 
