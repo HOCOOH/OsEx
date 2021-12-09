@@ -8,7 +8,7 @@ DASM		= objdump
 CC		= gcc
 LD		= ld
 ASMFLAGS	= -I ../include/ -f elf
-CFLAGS		= -I ../include/ -c -fno-builtin -fno-stack-protector -Wall -std=c99
+CFLAGS		= -I ../include/ -c -fno-builtin -fno-stack-protector -Wall
 LDFLAGS		= -Ttext 0x1000
 DASMFLAGS	= -D
 LIB		= ../lib/orangescrt.a
@@ -79,9 +79,3 @@ rm.o: rm.c ../include/type.h ../include/stdio.h
 	$(CC) $(CFLAGS) -o $@ $<
 rm : rm.o start.o $(LIB)
 	$(LD) $(LDFLAGS) -o $@ $?
-
-# pcheck.o: pcheck.c ../include/type.h ../include/stdio.h ../include/string.h
-# 	$(CC) $(CFLAGS) -o $@ $<
-
-# pcheck : pcheck.o start.o $(LIB)
-# 	$(LD) $(LDFLAGS) -o $@ $?

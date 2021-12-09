@@ -303,10 +303,10 @@ PRIVATE int alloc_smap_bit(int dev, int nr_sects_to_alloc)
 				for (; ((fsbuf[j] >> k) & 1) != 0; k++) {}
 				free_sect_nr = (i * SECTOR_SIZE + j) * 8 +
 					k - 1 + sb->n_1st_sect;
-			}
+			}//上面for{}中，结果的 k 使 fsbuf[j] >> k 是 0; 第 k bit 是一个free bit
 
 			for (; k < 8; k++) { /* repeat till enough bits are set */
-				assert(((fsbuf[j] >> k) & 1) == 0);
+				assert(((fsbuf[j] >> k) & 1) == 0);//如果 assert 则说明 fsbuf[j] >> k 是 1
 				fsbuf[j] |= (1 << k);
 				if (--nr_sects_to_alloc == 0)
 					break;
