@@ -217,7 +217,7 @@ void untar(const char * filename)
 	char buf[SECTOR_SIZE * 16];
 	int chunk = sizeof(buf);
 
-	// int cnt = 0;
+	int cnt = 0;
 
 	while (1) {
 		read(fd, buf, SECTOR_SIZE);
@@ -240,10 +240,10 @@ void untar(const char * filename)
 			return;
 		}
 		printf("    %s (%d bytes)\n", phdr->name, f_len);
-// #ifdef CMD_CHECK
-// 		char temp[MAX_FILENAME_LEN] = {0};
-// 		strcpy(temp, phdr->name);//文件名存起来了
-// #endif
+#ifdef CMD_CHECK
+		char temp[MAX_FILENAME_LEN] = {0};
+		strcpy(temp, phdr->name);//文件名存起来了
+#endif
 		while (bytes_left) {
 			// printf("%d\n", bytes_left);
 			int iobytes = min(chunk, bytes_left);
@@ -253,13 +253,13 @@ void untar(const char * filename)
 			bytes_left -= iobytes;
 		}
 		close(fdout);
-// #ifdef CMD_CHECK
-// 		if (cnt!=0){//第一个 kernel.bin 不校验
-// 			writeChkFile(temp, CalCheckVal(temp));
-// 			//CalCheckVal(phdr->name);
-// 		}
-// 		cnt++;
-// #endif
+#ifdef CMD_CHECK
+		if (cnt!=0){//第一个 kernel.bin 不校验
+			writeChkFile(temp, CalCheckVal(temp));
+			//CalCheckVal(phdr->name);
+		}
+		cnt++;
+#endif
 	}
 
 	close(fd);
@@ -404,49 +404,49 @@ void Init()
  *======================================================================*/
 void TestA()
 {
-	// printl("\nproc test start\n");
-	// int i;
-	// int pids[NR_PROC_TEST];
-	// MESSAGE msg;
+	printl("\nproc test start\n");
+	int i;
+	int pids[NR_PROC_TEST];
+	MESSAGE msg;
 
-	// int delay1[NR_PROC_TEST] = {12, 3, 19, 7, 15};
-	// int delay2[NR_PROC_TEST] = {9, 2, 17, 16, 5};
-	// int delay3[NR_PROC_TEST] = {2, 4, 21, 10, 6};
-	// int delay_sum[NR_PROC_TEST] = {23, 9, 57, 33, 26};
+	int delay1[NR_PROC_TEST] = {12, 3, 19, 7, 15};
+	int delay2[NR_PROC_TEST] = {9, 2, 17, 16, 5};
+	int delay3[NR_PROC_TEST] = {2, 4, 21, 10, 6};
+	int delay_sum[NR_PROC_TEST] = {23, 9, 57, 33, 26};
 
-	// for (i = 0; i < NR_PROC_TEST; i ++) {
-	// 	pids[i] = fork();
-	// 	if (pids[i] != 0) {	// parent proc
-	// 		// sec_delay(10);
-	// 	}
-	// 	else {			// chlid proc
-	// 		inform_start();
+	for (i = 0; i < NR_PROC_TEST; i ++) {
+		pids[i] = fork();
+		if (pids[i] != 0) {	// parent proc
+			// sec_delay(10);
+		}
+		else {			// chlid proc
+			inform_start();
 
-	// 		printl("[child is running, pid:%d]\n", getpid());
+			printl("[child is running, pid:%d]\n", getpid());
 
-	// 		test_delay(delay1[i]);
+			test_delay(delay1[i]);
 
-	// 		msg.CNT = delay2[i];
-	// 		send_recv(BOTH, TESTB, &msg);
+			msg.CNT = delay2[i];
+			send_recv(BOTH, TESTB, &msg);
 
-	// 		test_delay(delay3[i]);
+			test_delay(delay3[i]);
 
-	// 		inform_end();
+			inform_end();
 
-	// 		exit(0);
-	// 	}
-	// }
+			exit(0);
+		}
+	}
 
-	// while (!is_finish(pids[0])) {
-	// 	test_delay(20);
-	// }
+	while (!is_finish(pids[0])) {
+		test_delay(20);
+	}
 
-	// // dump_proc_display(pids[0]);
+	dump_proc_display(pids[0]);
 
-	// for (i = 0; i < NR_PROC_TEST; i ++) {
-	// 	int s;
-	// 	wait(&s, pids[i]);
-	// }
+	for (i = 0; i < NR_PROC_TEST; i ++) {
+		int s;
+		wait(&s, pids[i]);
+	}
 
 	for(;;);
 }

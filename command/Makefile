@@ -12,7 +12,8 @@ CFLAGS		= -I ../include/ -c -fno-builtin -fno-stack-protector -Wall
 LDFLAGS		= -Ttext 0x1000
 DASMFLAGS	= -D
 LIB		= ../lib/orangescrt.a
-BIN		= echo pwd delay_echo cat touch ls rm poc
+BIN		= echo pwd delay_echo cat touch ls rm overflow
+# BIN		= echo pwd ls cat 
 
 # All Phony Targets
 .PHONY : everything final clean realclean disasm all install
