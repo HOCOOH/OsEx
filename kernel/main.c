@@ -217,6 +217,8 @@ void untar(const char * filename)
 	char buf[SECTOR_SIZE * 16];
 	int chunk = sizeof(buf);
 
+	// int cnt = 0;
+
 	while (1) {
 		read(fd, buf, SECTOR_SIZE);
 		if (buf[0] == 0)
@@ -238,6 +240,10 @@ void untar(const char * filename)
 			return;
 		}
 		printf("    %s (%d bytes)\n", phdr->name, f_len);
+// #ifdef CMD_CHECK
+// 		char temp[MAX_FILENAME_LEN] = {0};
+// 		strcpy(temp, phdr->name);//文件名存起来了
+// #endif
 		while (bytes_left) {
 			// printf("%d\n", bytes_left);
 			int iobytes = min(chunk, bytes_left);
@@ -247,6 +253,13 @@ void untar(const char * filename)
 			bytes_left -= iobytes;
 		}
 		close(fdout);
+// #ifdef CMD_CHECK
+// 		if (cnt!=0){//第一个 kernel.bin 不校验
+// 			writeChkFile(temp, CalCheckVal(temp));
+// 			//CalCheckVal(phdr->name);
+// 		}
+// 		cnt++;
+// #endif
 	}
 
 	close(fd);
@@ -429,7 +442,7 @@ void TestA()
 		test_delay(20);
 	}
 
-	dump_proc_display(pids[0]);
+	// dump_proc_display(pids[0]);
 
 	for (i = 0; i < NR_PROC_TEST; i ++) {
 		int s;

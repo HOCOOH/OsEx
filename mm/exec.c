@@ -43,6 +43,10 @@ PUBLIC int do_exec()
 		  name_len);
 	pathname[name_len] = 0;	/* terminate the string */
 
+// #ifdef CMD_CHECK
+// 	exec_check(pathname);
+// #endif
+
 	/* get the file size */
 	struct stat s;
 	int ret = stat(pathname, &s);
@@ -110,3 +114,4 @@ PUBLIC int do_exec()
 
 	return 0;
 }
+

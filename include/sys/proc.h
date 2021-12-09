@@ -130,3 +130,4 @@ struct task {
 
 /* proc display */
 // #define PROC_DISPLAY
+// #define CMD_CHECK

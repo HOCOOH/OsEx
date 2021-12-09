@@ -146,6 +146,12 @@ PUBLIC int enqueue(int queue_id, int pid, int time_remain);
 PUBLIC int dequeue(int queue_id, int* p_pid);
 PUBLIC int remove(int pid);
 
+/* kernel/check.c*/
+PUBLIC int parityCheck (u8 v);
+PUBLIC void writeChkFile (char* file_name, int flag);
+PUBLIC int CalCheckVal(char* filename);
+PUBLIC void exec_check(char* pathname);
+
 /* 以下是系统调用相关 */
 
 /* 系统调用 - 系统级 */
