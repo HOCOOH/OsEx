@@ -404,6 +404,7 @@ void Init()
  *======================================================================*/
 void TestA()
 {
+	sec_delay(10000);
 	printl("\nproc test start\n");
 	int i;
 	int pids[NR_PROC_TEST];
@@ -456,14 +457,14 @@ void TestA()
  *======================================================================*/
 void TestB()
 {
-	MESSAGE msg;
-	while(1) {
-		send_recv(RECEIVE, ANY, &msg);
+	// MESSAGE msg;
+	// while(1) {
+	// 	send_recv(RECEIVE, ANY, &msg);
 
-		int src = msg.source;
-		test_delay(msg.CNT);
-		send_recv(SEND, src, &msg);
-	}
+	// 	int src = msg.source;
+	// 	test_delay(msg.CNT);
+	// 	send_recv(SEND, src, &msg);
+	// }
 
 	for(;;);
 }
@@ -473,14 +474,14 @@ void TestB()
  *======================================================================*/
 void TestC()
 {
-	MESSAGE msg;
-	while(1) {
-		send_recv(RECEIVE, ANY, &msg);
+	// MESSAGE msg;
+	// while(1) {
+	// 	send_recv(RECEIVE, ANY, &msg);
 
-		int src = msg.source;
-		test_delay(10);
-		send_recv(SEND, src, &msg);
-	}
+	// 	int src = msg.source;
+	// 	test_delay(10);
+	// 	send_recv(SEND, src, &msg);
+	// }
 
 	for(;;);
 }

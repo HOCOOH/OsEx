@@ -282,11 +282,11 @@ PUBLIC void block(struct proc* p)
 	assert(p->p_flags);
 	// schedule();
 
-	assert(p == p_proc_ready);
-	int pid_buf = -1;
-	dequeue(p->current_queue, &pid_buf);
+	// assert(p == p_proc_ready);
+	// int pid_buf = -1;
+	// dequeue(p->current_queue, &pid_buf);
 
-	schedule_mfqs();
+	schedule();
 }
 
 /*****************************************************************************
@@ -302,7 +302,7 @@ PUBLIC void unblock(struct proc* p)
 {
 	assert(p->p_flags == 0);
 
-	enqueue(p->current_queue, proc2pid(p), p->ticks);
+	// enqueue(p->current_queue, proc2pid(p), p->ticks);
 }
 
 /*****************************************************************************
