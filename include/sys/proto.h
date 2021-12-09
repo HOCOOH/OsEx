@@ -135,6 +135,8 @@ PUBLIC	void	dump_msg(const char * title, MESSAGE* m);
 PUBLIC	void	dump_proc(struct proc * p);
 PUBLIC	int	send_recv(int function, int src_dest, MESSAGE* msg);
 PUBLIC void	inform_int(int task_nr);
+PUBLIC void block(struct proc* p);
+PUBLIC void unblock(struct proc* p);
 
 /* lib/misc.c */
 PUBLIC void spin(char * func_name);

@@ -182,7 +182,7 @@ enum msgtype {
 	FORK, EXIT,
 
 	/* TTY, SYS, FS, MM, etc */
-	SYSCALL_RET,
+	SYSCALL_RET, FORK_CHILD_RET, 
 
 	/* message type for drivers */
 	DEV_OPEN = 1001,
@@ -292,7 +292,7 @@ enum msgtype {
 #define	NR_DEFAULT_FILE_SECTS	2048 /* 2048 * 512 = 1MB */
 
 
-#define NR_PROC_QUEUE 4
+#define NR_PROC_QUEUE 5
 #define NR_PROC_IN_QUEUE 50
 
 #define MAX_PROC_TICKS 30

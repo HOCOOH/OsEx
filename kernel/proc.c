@@ -18,8 +18,6 @@
 #include "global.h"
 #include "proto.h"
 
-PRIVATE void block(struct proc* p);
-PRIVATE void unblock(struct proc* p);
 PRIVATE int  msg_send(struct proc* current, int dest, MESSAGE* m);
 PRIVATE int  msg_receive(struct proc* current, int src, MESSAGE* m);
 PRIVATE int  deadlock(int src, int dest);
@@ -57,115 +55,61 @@ PUBLIC void schedule_mfqs() {
 	struct proc_queue* q;
 	struct proc* p;
 	int pid_buf = -1;
-	int pid_expected = -1;
-	int i, j, old_rear;
+	int i, j;
 
 	for (i = 0; i < NR_PROC_QUEUE; i++) {
 		q = mfqs_queue + i;
-		old_rear = q->rear;
-		for (j = q->front; j != old_rear; j = NEXT(j)) {
+		for (j = q->front; j != q->rear; j = NEXT(j)) {
 			p = proc_table + q->proc_pid[j];
+			assert(p->p_flags == 0);
 			if (p->ticks < 1) {
 				dequeue(p->current_queue, &pid_buf);
-				if (p->current_queue > 0 && p->current_queue < NR_PROC_QUEUE - 1) {
-					p->current_queue++;
-				}
-				enqueue(p->current_queue, pid_buf, TICKS_DEFAULT);
-			}
-			else if (p->p_flags) {
-				dequeue(p->current_queue, &pid_buf);
-				enqueue(p->current_queue, pid_buf, p->current_queue ? p->ticks : TICKS_DEFAULT);
+				enqueue(NEXT_QUEUE(p->current_queue), pid_buf, TICKS_DEFAULT);
 			}
 			else {
-				pid_expected = q->proc_pid[j];
-				goto loop_out;
+				p_proc_ready = p;
+				return;
 			}
 		}	
 	}
-	loop_out:
 
-	assert(pid_expected >= 0);
-	p_proc_ready = proc_table + pid_expected;
+	assert(0);
 }
 
 // PUBLIC void schedule_mfqs() {
-// 	// run tasks
-// 	if (task_run_flag) {
-// 		struct proc*	p;
-// 		int	greatest_ticks = 0;
+// 	struct proc_queue* q;
+// 	struct proc* p;
+// 	int pid_buf = -1;
+// 	int pid_expected = -1;
+// 	int i, j, old_rear;
 
-// 		for (p = proc_table; p < proc_table + NR_TASKS; p++) {
-// 			if (p->p_flags == 0) {
-// 				if (p->ticks > greatest_ticks) {
-// 					greatest_ticks = p->ticks;
-// 					p_proc_ready = p;
+// 	for (i = 0; i < NR_PROC_QUEUE; i++) {
+// 		q = mfqs_queue + i;
+// 		old_rear = q->rear;
+// 		for (j = q->front; j != old_rear; j = NEXT(j)) {
+// 			p = proc_table + q->proc_pid[j];
+// 			if (p->ticks < 1) {
+// 				dequeue(p->current_queue, &pid_buf);
+// 				if (p->current_queue > 0 && p->current_queue < NR_PROC_QUEUE - 1) {
+// 					p->current_queue++;
 // 				}
+// 				enqueue(p->current_queue, pid_buf, TICKS_DEFAULT);
 // 			}
-// 		}
-// 		// all tasks in this loop either have executed or are blocked
-// 		if (!greatest_ticks) {
-// 			for (p = proc_table; p < proc_table + NR_TASKS; p++) {
-// 				if (p->p_flags == 0) {
-// 					p->ticks = p->priority;
-// 				}
+// 			else if (p->p_flags) {
+// 				dequeue(p->current_queue, &pid_buf);
+// 				enqueue(p->current_queue, pid_buf, p->current_queue ? p->ticks : TICKS_DEFAULT);
 // 			}
-// 			task_run_flag = 0;
-// 			proc_ticks = 0;	
-// 		}
+// 			else {
+// 				pid_expected = q->proc_pid[j];
+// 				goto loop_out;
+// 			}
+// 		}	
 // 	}
-// 	// run user proc
-// 	if (!task_run_flag) {
-// 		struct proc_queue* q;
-// 		struct proc* p;
-// 		int pid_buf = -1;
-// 		int pid_expected = -1;
-// 		int i, j, old_rear;
+// 	loop_out:
 
-// 		for (i = 0; i < NR_PROC_QUEUE; i++) {
-// 			q = mfqs_queue + i;
-// 			old_rear = q->rear;
-// 			for (j = q->front; j != old_rear; j = NEXT(j)) {
-// 				p = proc_table + q->proc_pid[j];
-// 				if (p->time_remain < 1) {
-// 					dequeue(p->current_queue, &pid_buf);
-// 					if (p->current_queue < NR_PROC_QUEUE - 1) {
-// 						p->current_queue++;
-// 					}
-// 					enqueue(p->current_queue, pid_buf, 0);
-// 				}
-// 				else if (p->p_flags) {
-// 					dequeue(p->current_queue, &pid_buf);
-// 					enqueue(p->current_queue, pid_buf, p->time_remain);
-// 				}
-// 				else {
-// 					pid_expected = q->proc_pid[j];
-// 					goto loop_out;
-// 				}
-// 			}	
-// 		}
-// 		loop_out:
-// 		// all procs in this loop either have executed or are blocked
-// 		if (pid_expected == -1) {
-// 			task_run_flag = 1;
-// 			schedule_mfqs();
-// 			return;
-// 		}
-// 		assert(pid_expected >= NR_TASKS);
-// 		p_proc_ready = proc_table + pid_expected;
-// 		// char info[STR_DEFAULT_LEN];
-// 		// int text_color = MAKE_COLOR(GREEN, RED);
-// 		// sprintf(info, "%d\n", proc2pid(p_proc_ready));
-// 		// disp_color_str(info, text_color);
-// 		// dump_queue();
-// 		// bb;
-
-// 		if(!p_proc_ready->is_executed) {
-// 			p_proc_ready->is_executed = 1;
-// 			p_proc_ready->start_time = ticks;
-// 		}
-// 	}
+// 	assert(pid_expected >= 0);
+// 	p_proc_ready = proc_table + pid_expected;
 // }
-
 
 PUBLIC void dump_queue() {
 	int i, j;
@@ -332,10 +276,15 @@ PUBLIC void reset_msg(MESSAGE* p)
  * 
  * @param p The proc to be blocked.
  *****************************************************************************/
-PRIVATE void block(struct proc* p)
+PUBLIC void block(struct proc* p)
 {
 	assert(p->p_flags);
 	// schedule();
+
+	assert(p == p_proc_ready);
+	int pid_buf = -1;
+	dequeue(p->current_queue, &pid_buf);
+
 	schedule_mfqs();
 }
 
@@ -348,9 +297,11 @@ PRIVATE void block(struct proc* p)
  * 
  * @param p The unblocked proc.
  *****************************************************************************/
-PRIVATE void unblock(struct proc* p)
+PUBLIC void unblock(struct proc* p)
 {
 	assert(p->p_flags == 0);
+
+	enqueue(pid2qid(proc2pid(p)), proc2pid(p), TICKS_BLOCK(p));
 }
 
 /*****************************************************************************
@@ -436,7 +387,9 @@ PRIVATE int msg_send(struct proc* current, int dest, MESSAGE* m)
 		p_dest->p_msg = 0;
 		p_dest->p_flags &= ~RECEIVING; /* dest has received the msg */
 		p_dest->p_recvfrom = NO_TASK;
-		unblock(p_dest);
+		if (m->type != FORK_CHILD_RET) {
+			unblock(p_dest);
+		}
 
 		assert(p_dest->p_flags == 0);
 		assert(p_dest->p_msg == 0);

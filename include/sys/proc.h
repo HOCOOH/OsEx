@@ -84,7 +84,7 @@ struct task {
 	char	name[32];
 };
 
-#define proc2pid(x) (x - proc_table)
+#define proc2pid(x) ((x) - proc_table)
 
 /* Number of tasks & processes */
 #define NR_TASKS		5
@@ -129,4 +129,4 @@ struct task {
 
 
 /* proc display */
-#define PROC_DISPLAY
+// #define PROC_DISPLAY

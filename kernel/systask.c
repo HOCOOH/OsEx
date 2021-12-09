@@ -162,7 +162,7 @@ PRIVATE void do_dump_proc(int pid_begin) {
 	struct proc* p;
 	for (i = pid_begin; i < pid_begin + 5; i++) {
 		p = proc_table + i;
-		assert(p->p_flags & HANGING);
+		// assert(p->p_flags & HANGING);
 		printl("|-------------------------------------------------|\n");
 		printl("| %8s  | %3d | %5d | %5d | %5d | %5d |\n", p->name, i, p->arrive_time, \
 			p->start_time, p->end_time, p->end_time - p->arrive_time);

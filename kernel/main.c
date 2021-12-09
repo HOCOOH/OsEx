@@ -43,14 +43,16 @@ PUBLIC int kernel_main()
 	/* proc schudule */
 #ifdef PROC_DISPLAY
 	mfqs_queue[0].time_slot = 20;
-	mfqs_queue[1].time_slot = 10;
+	mfqs_queue[1].time_slot = 20;
 	mfqs_queue[2].time_slot = 30;
 	mfqs_queue[3].time_slot = 50;
+	mfqs_queue[4].time_slot = 50;
 #else
 	mfqs_queue[0].time_slot = 20;
-	mfqs_queue[1].time_slot = 2;
-	mfqs_queue[2].time_slot = 4;
-	mfqs_queue[3].time_slot = 8;
+	mfqs_queue[1].time_slot = 20;
+	mfqs_queue[2].time_slot = 2;
+	mfqs_queue[3].time_slot = 4;
+	mfqs_queue[4].time_slot = 8;
 #endif
 
 	int k = 0;
@@ -71,7 +73,6 @@ PUBLIC int kernel_main()
 			rpl     = RPL_TASK;
 			eflags  = 0x1202;/* IF=1, IOPL=1, bit 2 is always 1 */
 			prio    = 15;
-			enqueue(TASK_INIT_QUEUE, i, TICKS_DEFAULT);
 		} 
 		else {                  /* USER PROC */
 			t	= user_proc_table + (i - NR_TASKS);
@@ -79,12 +80,13 @@ PUBLIC int kernel_main()
 			rpl     = RPL_USER;
 			eflags  = 0x202;	/* IF=1, bit 2 is always 1 */
 			prio    = 5;
-			enqueue(PROC_INIT_QUEUE, i, TICKS_DEFAULT);
 		}
 
 		strcpy(p->name, t->name);	/* name of the process */
 		p->p_parent = NO_TASK;
-		// only for display
+
+		enqueue(pid2qid(i), i, TICKS_DEFAULT);
+		/* only for display */
 		p->arrive_time = 0;
 		p->start_time = 0;
 		p->end_time = 0;
@@ -387,10 +389,10 @@ void Init()
  *======================================================================*/
 void TestA()
 {
-	sec_delay(1000);
+	printl("ssssssssssssssssssssssssssssssssssss\n");
+	// sec_delay(1000);
 	int i;
 	int pids[5];
-	MESSAGE msg;
 
 	for (i = 0; i < 5; i ++) {
 		pids[i] = fork();
@@ -406,12 +408,11 @@ void TestA()
 			// sec_delay(5);
 
 			inform_end();
-
 			exit(0);
 		}
 	}
 
-	sec_delay(1000);
+	sec_delay(10000);
 
 	dump_proc_display(pids[0]);
 
