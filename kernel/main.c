@@ -205,7 +205,7 @@ void untar(const char * filename)
 
 	char buf[SECTOR_SIZE * 16];
 	int chunk = sizeof(buf);
-
+	int cnt = 0;
 	while (1) {
 		read(fd, buf, SECTOR_SIZE);
 		if (buf[0] == 0)
@@ -227,6 +227,10 @@ void untar(const char * filename)
 			return;
 		}
 		printf("    %s (%d bytes)\n", phdr->name, f_len);
+		
+		char temp[MAX_FILENAME_LEN] = {0};
+		strcpy(temp, phdr->name);//文件名存起来了
+		
 		while (bytes_left) {
 			// printf("%d\n", bytes_left);
 			int iobytes = min(chunk, bytes_left);
@@ -236,6 +240,12 @@ void untar(const char * filename)
 			bytes_left -= iobytes;
 		}
 		close(fdout);
+		
+		if (cnt!=0){//第一个 kernel.bin 不校验
+			writeChkFile(temp, CalCheckVal(temp));
+			//CalCheckVal(phdr->name);
+		}
+		cnt++;
 	}
 
 	close(fd);
@@ -341,7 +351,7 @@ void Init()
 			
 
 	// char * tty_list[] = {"/dev_tty0"};
-	char * tty_list[] = {"/dev_tty1", "/dev_tty2"};
+	char * tty_list[] = {"/dev_tty0", "/dev_tty1", "/dev_tty2"};
 
 	int i;
 	for (i = 0; i < sizeof(tty_list) / sizeof(tty_list[0]); i++) {

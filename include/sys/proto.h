@@ -115,6 +115,9 @@ PUBLIC void		do_wait();
 
 /* mm/exec.c */
 PUBLIC int		do_exec();
+PUBLIC int parityCheck (u8 v);
+PUBLIC void writeChkFile (char* file_name, int flag);
+PUBLIC int CalCheckVal(char* filename);
 
 /* console.c */
 PUBLIC void out_char(CONSOLE* p_con, char ch);

@@ -8,11 +8,11 @@ DASM		= objdump
 CC		= gcc
 LD		= ld
 ASMFLAGS	= -I ../include/ -f elf
-CFLAGS		= -I ../include/ -c -fno-builtin -fno-stack-protector -Wall
+CFLAGS		= -I ../include/ -c -fno-builtin -fno-stack-protector -Wall -std=c99
 LDFLAGS		= -Ttext 0x1000
 DASMFLAGS	= -D
 LIB		= ../lib/orangescrt.a
-BIN		= echo pwd delay_echo cat touch ls rm
+BIN		= echo cat touch ls delay_echo rm
 
 # All Phony Targets
 .PHONY : everything final clean realclean disasm all install
@@ -47,11 +47,11 @@ echo.o: echo.c ../include/type.h ../include/stdio.h
 echo : echo.o start.o $(LIB)
 	$(LD) $(LDFLAGS) -o $@ $?
 
-pwd.o: pwd.c ../include/type.h ../include/stdio.h
-	$(CC) $(CFLAGS) -o $@ $<
+# pwd.o: pwd.c ../include/type.h ../include/stdio.h
+# 	$(CC) $(CFLAGS) -o $@ $<
 
-pwd : pwd.o start.o $(LIB)
-	$(LD) $(LDFLAGS) -o $@ $?
+# pwd : pwd.o start.o $(LIB)
+# 	$(LD) $(LDFLAGS) -o $@ $?
 
 delay_echo.o: delay_echo.c ../include/type.h ../include/stdio.h
 	$(CC) $(CFLAGS) -o $@ $<
@@ -79,3 +79,9 @@ rm.o: rm.c ../include/type.h ../include/stdio.h
 	$(CC) $(CFLAGS) -o $@ $<
 rm : rm.o start.o $(LIB)
 	$(LD) $(LDFLAGS) -o $@ $?
+
+# pcheck.o: pcheck.c ../include/type.h ../include/stdio.h ../include/string.h
+# 	$(CC) $(CFLAGS) -o $@ $<
+
+# pcheck : pcheck.o start.o $(LIB)
+# 	$(LD) $(LDFLAGS) -o $@ $?
