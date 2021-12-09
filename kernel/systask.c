@@ -23,6 +23,8 @@
 
 PRIVATE int read_register(char reg_addr);
 PRIVATE u32 get_rtc_time(struct time *t);
+PRIVATE void do_dump_proc(int pid_begin);
+PRIVATE int do_is_finish(int pid_begin);
 
 /*****************************************************************************
  *                                task_sys
@@ -56,6 +58,26 @@ PUBLIC void task_sys()
 			phys_copy(va2la(src, msg.BUF),
 				  va2la(TASK_SYS, &t),
 				  sizeof(t));
+			send_recv(SEND, src, &msg);
+			break;
+		case PROC_START:
+			msg.type = SYSCALL_RET;
+			proc_table[src].start_time = ticks;
+			send_recv(SEND, src, &msg);
+			break;
+		case PROC_END:
+			msg.type = SYSCALL_RET;
+			proc_table[src].end_time = ticks;
+			send_recv(SEND, src, &msg);
+			break;
+		case IS_FINISH:
+			msg.RETVAL = do_is_finish(msg.PID);
+			msg.type = SYSCALL_RET;
+			send_recv(SEND, src, &msg);
+			break;
+		case DUMP_PROC:
+			do_dump_proc(msg.PID);
+			msg.type = SYSCALL_RET;
 			send_recv(SEND, src, &msg);
 			break;
 		// case PRINT_FILE:
@@ -137,3 +159,40 @@ PRIVATE int read_register(char reg_addr)
 	return in_byte(CLK_IO);
 }
 
+PRIVATE int do_is_finish(int pid_begin) {
+	int i; 
+	for (i = pid_begin; i < pid_begin + NR_PROC_TEST; i++) {
+		if (!(proc_table[i].p_flags & HANGING)) {
+			return 0;
+		}
+	}
+
+	return 1;
+}
+
+
+PRIVATE void do_dump_proc(int pid_begin) {
+	printl("|--------------------------------------------------------------------|\n");
+	printl("| proc_name | eval | arrive | start |  end  | cycle | weighted_cycle |\n");
+
+	int i;
+	struct proc* p;
+	int sum = 0;
+	int weighted_sum = 0;
+	int delay_sum[NR_PROC_TEST] = {23, 9, 57, 33, 26};
+	for (i = 0; i < NR_PROC_TEST; i++) {
+		delay_sum[i] *= 5;
+		p = proc_table + pid_begin + i;
+		assert(p->p_flags & HANGING);
+		sum += p->end_time - p->arrive_time;
+		weighted_sum += (p->end_time - p->arrive_time) / delay_sum[i];
+		printl("|--------------------------------------------------------------------|\n");
+		printl("| %8s  | %4d | %5d  | %5d | %5d | %5d | %9d      |\n", p->name, delay_sum[i], p->arrive_time, \
+			p->start_time, p->end_time, p->end_time - p->arrive_time, (p->end_time - p->arrive_time) / delay_sum[i]);
+	}
+	printl("|--------------------------------------------------------------------|\n");
+	printl("| average cycle time: %5d                                          |\n", sum / NR_PROC_TEST);
+	printl("|--------------------------------------------------------------------|\n");
+	printl("| weighted average cycle time: %5d                                 |\n", weighted_sum / NR_PROC_TEST);
+	printl("|--------------------------------------------------------------------|\n");
+}

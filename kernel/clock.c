@@ -35,7 +35,11 @@ PUBLIC void clock_handler(int irq)
 	if (++ticks >= MAX_TICKS)
 		ticks = 0;
 
-	if (task_run_flag && p_proc_ready->ticks) {
+	// if (task_run_flag && p_proc_ready->ticks) {
+	// 	p_proc_ready->ticks--;
+	// }
+
+	if (p_proc_ready->ticks) {
 		p_proc_ready->ticks--;
 	}
 
@@ -46,20 +50,23 @@ PUBLIC void clock_handler(int irq)
 		return;
 	}
 
-	if (task_run_flag && p_proc_ready->ticks > 0) {
-		return;
-	}
+	// if (task_run_flag && p_proc_ready->ticks > 0) {
+	// 	return;
+	// }
 
-	if (task_run_flag == 0) {
-		p_proc_ready->time_remain--;
-		if (proc_ticks++ > MAX_PROC_TICKS) {
-			task_run_flag = 1;
-		}
-	}
+	// if (task_run_flag == 0) {
+	// 	p_proc_ready->time_remain--;
+	// 	if (proc_ticks++ > MAX_PROC_TICKS) {
+	// 		task_run_flag = 1;
+	// 	}
+	// }
 
 	// schedule();
 
 	schedule_mfqs();
+	// if (strcmp(p_proc_ready->name, "pwd_poc") == 0) {
+	// 	bb;
+	// }
 }
 
 /*****************************************************************************
@@ -90,7 +97,7 @@ PUBLIC void sec_delay(int sec)
 
 	int t = get_ticks_syscall();
 
-	while(((get_ticks_syscall() - t)) < sec * HZ) {}
+	while(((get_ticks_syscall() - t)) < sec) {}
 }
 
 /*****************************************************************************

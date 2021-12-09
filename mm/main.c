@@ -56,6 +56,7 @@ PUBLIC void task_mm()
 			proc_table[src].p_msg = 0;
 			proc_table[src].p_flags &= ~RECEIVING; /* dest has received the msg */
 			proc_table[src].p_recvfrom = NO_TASK;
+			unblock(proc_table + src);
 			reply = 0;
 			break;
 		case WAIT:

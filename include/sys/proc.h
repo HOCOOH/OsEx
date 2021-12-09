@@ -70,13 +70,12 @@ struct proc {
 	struct file_desc * filp[NR_FILES];
 
 	int current_queue;
-	int time_remain;
+	// int time_remain;
 
 	// only for display
 	int arrive_time;
 	int start_time;
 	int end_time; 
-	int is_executed;
 };
 
 struct task {
@@ -85,7 +84,7 @@ struct task {
 	char	name[32];
 };
 
-#define proc2pid(x) (x - proc_table)
+#define proc2pid(x) ((x) - proc_table)
 
 /* Number of tasks & processes */
 #define NR_TASKS		5
@@ -128,3 +127,7 @@ struct task {
 				STACK_SIZE_TESTB + \
 				STACK_SIZE_TESTC)
 
+
+/* proc display */
+// #define PROC_DISPLAY
+// #define CMD_CHECK

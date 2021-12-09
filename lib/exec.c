@@ -90,6 +90,7 @@ PUBLIC int execv(const char *path, char * argv[])
 	msg.BUF_LEN	= stack_len;
 
 	send_recv(BOTH, TASK_MM, &msg);
+	assert(0);
 	assert(msg.type == SYSCALL_RET);
 
 	return msg.RETVAL;

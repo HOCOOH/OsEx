@@ -40,12 +40,23 @@ PUBLIC int kernel_main()
 
 	char * stk = task_stack + STACK_SIZE_TOTAL;
 
-	/* prco schudule */
-	mfqs_queue[0].time_slot = 2;
-	mfqs_queue[1].time_slot = 4;
-	mfqs_queue[2].time_slot = 8;
+	/* proc schudule */
+#ifdef PROC_DISPLAY
+	mfqs_queue[0].time_slot = 20;
+	mfqs_queue[1].time_slot = 20;
+	mfqs_queue[2].time_slot = 30;
+	mfqs_queue[3].time_slot = 50;
+	mfqs_queue[4].time_slot = 60;
+#else
+	mfqs_queue[0].time_slot = 20;
+	mfqs_queue[1].time_slot = 20;
+	mfqs_queue[2].time_slot = 2;
+	mfqs_queue[3].time_slot = 4;
+	mfqs_queue[4].time_slot = 8;
+#endif
+
 	int k = 0;
-	for (; k < 3; k++) {
+	for (; k < NR_PROC_QUEUE; k++) {
 		mfqs_queue[k].front = 0;
 		mfqs_queue[k].rear = 0;
 	}
@@ -69,14 +80,14 @@ PUBLIC int kernel_main()
 			rpl     = RPL_USER;
 			eflags  = 0x202;	/* IF=1, bit 2 is always 1 */
 			prio    = 5;
-			enqueue(0, i, 0);
 		}
 
 		strcpy(p->name, t->name);	/* name of the process */
 		p->p_parent = NO_TASK;
-		// only for display
+
+		enqueue(pid2qid(i), i, TICKS_DEFAULT);
+		/* only for display */
 		p->arrive_time = 0;
-		p->is_executed = 0;
 		p->start_time = 0;
 		p->end_time = 0;
 
@@ -206,6 +217,8 @@ void untar(const char * filename)
 	char buf[SECTOR_SIZE * 16];
 	int chunk = sizeof(buf);
 
+	int cnt = 0;
+
 	while (1) {
 		read(fd, buf, SECTOR_SIZE);
 		if (buf[0] == 0)
@@ -227,6 +240,10 @@ void untar(const char * filename)
 			return;
 		}
 		printf("    %s (%d bytes)\n", phdr->name, f_len);
+#ifdef CMD_CHECK
+		char temp[MAX_FILENAME_LEN] = {0};
+		strcpy(temp, phdr->name);//文件名存起来了
+#endif
 		while (bytes_left) {
 			// printf("%d\n", bytes_left);
 			int iobytes = min(chunk, bytes_left);
@@ -236,6 +253,13 @@ void untar(const char * filename)
 			bytes_left -= iobytes;
 		}
 		close(fdout);
+#ifdef CMD_CHECK
+		if (cnt!=0){//第一个 kernel.bin 不校验
+			writeChkFile(temp, CalCheckVal(temp));
+			//CalCheckVal(phdr->name);
+		}
+		cnt++;
+#endif
 	}
 
 	close(fd);
@@ -340,17 +364,17 @@ void Init()
 	untar("/cmd.tar");
 			
 
-	// char * tty_list[] = {"/dev_tty0"};
+	// // char * tty_list[] = {"/dev_tty0"};
 	char * tty_list[] = {"/dev_tty1", "/dev_tty2"};
 
 	int i;
 	for (i = 0; i < sizeof(tty_list) / sizeof(tty_list[0]); i++) {
 		int pid = fork();
 		if (pid != 0) { /* parent process */
-			printf("[parent is running, child pid:%d]\n", pid);
+			// printf("[parent is running, child pid:%d]\n", pid);
 		}
 		else {	/* child process */
-			printf("[child is running, pid:%d]\n", getpid());
+			// printf("[child is running, pid:%d]\n", getpid());
 			close(fd_stdin);
 			close(fd_stdout);
 			
@@ -359,6 +383,8 @@ void Init()
 		}
 	}
 	
+	printl("orange's os initialization completed, ticks: %d\n", get_ticks());
+
 	// MESSAGE msg;
 
 	// msg.type	= PRINT_FILE;
@@ -373,48 +399,54 @@ void Init()
 	assert(0);
 }
 
-// /*======================================================================*
-//                                TestA
-//  *======================================================================*/
-// void TestA()
-// {
-// 	for(;;);
-// }
-
-// /*======================================================================*
-//                                TestB
-//  *======================================================================*/
-// void TestB()
-// {
-// 	for(;;);
-// }
-
-// /*======================================================================*
-//                                TestB
-//  *======================================================================*/
-// void TestC()
-// {
-// 	for(;;);
-// }
-
 /*======================================================================*
                                TestA
  *======================================================================*/
 void TestA()
 {
-	// sec_delay(100);
-	// printl("fuck\n");
-	// int pid = fork();
-	// if (pid != 0) {	// parent proc
-	// printl("asshole\n");
-	// 	int ret;
-	// 	// wait(&ret, pid);
-	// }
-	// else {
-	// 	// sec_delay(100);
-	// 	printl("fuck me\n");
-	// 	exit(0);
-	// }
+	printl("\nproc test start\n");
+	int i;
+	int pids[NR_PROC_TEST];
+	MESSAGE msg;
+
+	int delay1[NR_PROC_TEST] = {12, 3, 19, 7, 15};
+	int delay2[NR_PROC_TEST] = {9, 2, 17, 16, 5};
+	int delay3[NR_PROC_TEST] = {2, 4, 21, 10, 6};
+	int delay_sum[NR_PROC_TEST] = {23, 9, 57, 33, 26};
+
+	for (i = 0; i < NR_PROC_TEST; i ++) {
+		pids[i] = fork();
+		if (pids[i] != 0) {	// parent proc
+			// sec_delay(10);
+		}
+		else {			// chlid proc
+			inform_start();
+
+			printl("[child is running, pid:%d]\n", getpid());
+
+			test_delay(delay1[i]);
+
+			msg.CNT = delay2[i];
+			send_recv(BOTH, TESTB, &msg);
+
+			test_delay(delay3[i]);
+
+			inform_end();
+
+			exit(0);
+		}
+	}
+
+	while (!is_finish(pids[0])) {
+		test_delay(20);
+	}
+
+	dump_proc_display(pids[0]);
+
+	for (i = 0; i < NR_PROC_TEST; i ++) {
+		int s;
+		wait(&s, pids[i]);
+	}
 
 	for(;;);
 }
@@ -424,6 +456,15 @@ void TestA()
  *======================================================================*/
 void TestB()
 {
+	MESSAGE msg;
+	while(1) {
+		send_recv(RECEIVE, ANY, &msg);
+
+		int src = msg.source;
+		test_delay(msg.CNT);
+		send_recv(SEND, src, &msg);
+	}
+
 	for(;;);
 }
 
@@ -432,7 +473,26 @@ void TestB()
  *======================================================================*/
 void TestC()
 {
+	MESSAGE msg;
+	while(1) {
+		send_recv(RECEIVE, ANY, &msg);
+
+		int src = msg.source;
+		test_delay(10);
+		send_recv(SEND, src, &msg);
+	}
+
 	for(;;);
+}
+
+/* delay for about num ticks */
+PUBLIC void test_delay(int num) {
+	int i, j;
+	for (i = 0; i < num; i++) {
+		for (j = 0; j < 20000; j++) {
+			// empty
+		}
+	}
 }
 
 /*****************************************************************************

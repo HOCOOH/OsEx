@@ -138,6 +138,8 @@
 #define TASK_FS		3
 #define TASK_MM		4
 #define INIT		5
+#define TESTA		6
+#define TESTB 		7
 #define ANY		(NR_TASKS + NR_PROCS + 10)
 #define NO_TASK		(NR_TASKS + NR_PROCS + 20)
 
@@ -167,7 +169,7 @@ enum msgtype {
 	HARD_INT = 1,
 
 	/* SYS task */
-	GET_TICKS, GET_PID, GET_RTC_TIME, PRINT_FILE, 
+	GET_TICKS, GET_PID, GET_RTC_TIME, PROC_START, PROC_END, IS_FINISH, DUMP_PROC, PRINT_FILE,
 
 	/* FS */
 	OPEN, CLOSE, READ, WRITE, LSEEK, STAT, UNLINK, LIST, 
@@ -182,7 +184,7 @@ enum msgtype {
 	FORK, EXIT,
 
 	/* TTY, SYS, FS, MM, etc */
-	SYSCALL_RET,
+	SYSCALL_RET, FORK_CHILD_RET, 
 
 	/* message type for drivers */
 	DEV_OPEN = 1001,
@@ -292,9 +294,11 @@ enum msgtype {
 #define	NR_DEFAULT_FILE_SECTS	2048 /* 2048 * 512 = 1MB */
 
 
-#define NR_PROC_QUEUE 3
+#define NR_PROC_QUEUE 5
 #define NR_PROC_IN_QUEUE 50
 
-#define MAX_PROC_TICKS 30
+// #define MAX_PROC_TICKS 30
+
+#define NR_PROC_TEST 5
 
 #endif /* _ORANGES_CONST_H_ */

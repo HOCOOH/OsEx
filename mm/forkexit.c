@@ -113,11 +113,10 @@ PUBLIC int do_fork()
 		  DA_LIMIT_4K | DA_32 | DA_DRW | PRIVILEGE_USER << 5);
 
 	/* enqueue child proc */
-	enqueue(0, proc2pid(p), 0);
+	enqueue(pid2qid(proc2pid(p)), proc2pid(p), TICKS_DEFAULT);
 
 	/* only for display */
 	p->arrive_time = ticks;
-	p->is_executed = 0;
 
 	/* tell FS, see fs_fork() */
 	MESSAGE msg2fs;
@@ -130,7 +129,7 @@ PUBLIC int do_fork()
 
 	/* birth of the child */
 	MESSAGE m;
-	m.type = SYSCALL_RET;
+	m.type = FORK_CHILD_RET;
 	m.RETVAL = 0;
 	m.PID = 0;
 	send_recv(SEND, child_pid, &m);
@@ -275,7 +274,7 @@ PUBLIC void do_wait()
 			return;
 		}
 		else if (p->p_flags != FREE_SLOT) {
-			/* has children, but no child is HANGING */
+			/* has pid child, but child is HANGING */
 			proc_table[pid].p_flags |= WAITING;
 		}
 		else {
