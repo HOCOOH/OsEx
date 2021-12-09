@@ -13,7 +13,7 @@ LDFLAGS		= -Ttext 0x1000
 DASMFLAGS	= -D
 LIB		= ../lib/orangescrt.a
 BIN		= echo pwd delay_echo cat touch ls rm overflow
-# BIN		= echo pwd ls cat 
+# BIN		= echo poc ls cat touch
 
 # All Phony Targets
 .PHONY : everything final clean realclean disasm all install
