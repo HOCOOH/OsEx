@@ -46,7 +46,7 @@ PUBLIC int kernel_main()
 	mfqs_queue[1].time_slot = 20;
 	mfqs_queue[2].time_slot = 30;
 	mfqs_queue[3].time_slot = 50;
-	mfqs_queue[4].time_slot = 50;
+	mfqs_queue[4].time_slot = 60;
 #else
 	mfqs_queue[0].time_slot = 20;
 	mfqs_queue[1].time_slot = 20;
@@ -358,10 +358,10 @@ void Init()
 	for (i = 0; i < sizeof(tty_list) / sizeof(tty_list[0]); i++) {
 		int pid = fork();
 		if (pid != 0) { /* parent process */
-			printf("[parent is running, child pid:%d]\n", pid);
+			// printf("[parent is running, child pid:%d]\n", pid);
 		}
 		else {	/* child process */
-			printf("[child is running, pid:%d]\n", getpid());
+			// printf("[child is running, pid:%d]\n", getpid());
 			close(fd_stdin);
 			close(fd_stdout);
 			
@@ -370,6 +370,8 @@ void Init()
 		}
 	}
 	
+	printl("orange's os initialization completed, ticks: %d\n", get_ticks());
+
 	// MESSAGE msg;
 
 	// msg.type	= PRINT_FILE;
@@ -389,12 +391,17 @@ void Init()
  *======================================================================*/
 void TestA()
 {
-	printl("ssssssssssssssssssssssssssssssssssss\n");
-	// sec_delay(1000);
+	printl("\nproc test start\n");
 	int i;
-	int pids[5];
+	int pids[NR_PROC_TEST];
+	MESSAGE msg;
 
-	for (i = 0; i < 5; i ++) {
+	int delay1[NR_PROC_TEST] = {12, 3, 19, 7, 15};
+	int delay2[NR_PROC_TEST] = {9, 2, 17, 16, 5};
+	int delay3[NR_PROC_TEST] = {2, 4, 21, 10, 6};
+	int delay_sum[NR_PROC_TEST] = {23, 9, 57, 33, 26};
+
+	for (i = 0; i < NR_PROC_TEST; i ++) {
 		pids[i] = fork();
 		if (pids[i] != 0) {	// parent proc
 			// sec_delay(10);
@@ -404,17 +411,30 @@ void TestA()
 
 			printl("[child is running, pid:%d]\n", getpid());
 
-			test_delay(200);
-			// sec_delay(5);
+			test_delay(delay1[i]);
+
+			msg.CNT = delay2[i];
+			send_recv(BOTH, TESTB, &msg);
+
+			test_delay(delay3[i]);
 
 			inform_end();
+
 			exit(0);
 		}
 	}
 
-	sec_delay(10000);
+	// sec_delay(10000);
+	while (!is_finish(pids[0])) {
+		test_delay(20);
+	}
 
 	dump_proc_display(pids[0]);
+
+	for (i = 0; i < NR_PROC_TEST; i ++) {
+		int s;
+		wait(&s, pids[i]);
+	}
 
 	for(;;);
 }
@@ -424,6 +444,15 @@ void TestA()
  *======================================================================*/
 void TestB()
 {
+	MESSAGE msg;
+	while(1) {
+		send_recv(RECEIVE, ANY, &msg);
+
+		int src = msg.source;
+		test_delay(msg.CNT);
+		send_recv(SEND, src, &msg);
+	}
+
 	for(;;);
 }
 
@@ -432,6 +461,15 @@ void TestB()
  *======================================================================*/
 void TestC()
 {
+	MESSAGE msg;
+	while(1) {
+		send_recv(RECEIVE, ANY, &msg);
+
+		int src = msg.source;
+		test_delay(10);
+		send_recv(SEND, src, &msg);
+	}
+
 	for(;;);
 }
 

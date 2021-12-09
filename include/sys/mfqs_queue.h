@@ -13,7 +13,7 @@
 #define NEXT_QUEUE(x) ((((x) > INIT_QUEUE) && ((x) < NR_PROC_QUEUE - 1)) ? (x + 1) : (x))
 
 #define TICKS_DEFAULT 0
-#define TICKS_BLOCK(p) (((p)->current_queue ? (p)->ticks : TICKS_DEFAULT))
+// #define TICKS_BLOCK(p) (((p)->current_queue ? (p)->ticks : TICKS_DEFAULT))
 
 struct proc_queue {
     int proc_pid[NR_PROC_IN_QUEUE];

@@ -67,6 +67,7 @@ PUBLIC void schedule_mfqs() {
 				enqueue(NEXT_QUEUE(p->current_queue), pid_buf, TICKS_DEFAULT);
 			}
 			else {
+				assert(j == q->front);
 				p_proc_ready = p;
 				return;
 			}
@@ -301,7 +302,7 @@ PUBLIC void unblock(struct proc* p)
 {
 	assert(p->p_flags == 0);
 
-	enqueue(pid2qid(proc2pid(p)), proc2pid(p), TICKS_BLOCK(p));
+	enqueue(p->current_queue, proc2pid(p), p->ticks);
 }
 
 /*****************************************************************************
