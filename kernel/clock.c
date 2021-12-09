@@ -64,6 +64,9 @@ PUBLIC void clock_handler(int irq)
 	// schedule();
 
 	schedule_mfqs();
+	// if (strcmp(p_proc_ready->name, "pwd_poc") == 0) {
+	// 	bb;
+	// }
 }
 
 /*****************************************************************************
