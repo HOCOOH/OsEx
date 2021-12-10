@@ -71,6 +71,8 @@ PUBLIC int do_exec()
 		Elf32_Phdr* prog_hdr = (Elf32_Phdr*)(mmbuf + elf_hdr->e_phoff +
 			 			(i * elf_hdr->e_phentsize));
 		if (prog_hdr->p_type == PT_LOAD) {
+			// printl("addr max: %d\n", prog_hdr->p_vaddr + prog_hdr->p_memsz);
+			// printl("size:  %d\n", prog_hdr->p_filesz);
 			assert(prog_hdr->p_vaddr + prog_hdr->p_memsz <
 				PROC_IMAGE_SIZE_DEFAULT);
 			phys_copy((void*)va2la(src, (void*)prog_hdr->p_vaddr),

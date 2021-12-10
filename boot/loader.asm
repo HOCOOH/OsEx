@@ -17,11 +17,11 @@ org  0100h
 
 
 ; GDT ------------------------------------------------------------------------------------------------------------------------------------------------------------
-;                                                段基址            段界限     , 属性
-LABEL_GDT:			Descriptor             0,                    0, 0						; 空描述符
-LABEL_DESC_FLAT_C:		Descriptor             0,              0fffffh, DA_CR  | DA_32 | DA_LIMIT_4K			; 0 ~ 4G
-LABEL_DESC_FLAT_RW:		Descriptor             0,              0fffffh, DA_DRW | DA_32 | DA_LIMIT_4K			; 0 ~ 4G
-LABEL_DESC_VIDEO:		Descriptor	 0B8000h,               0ffffh, DA_DRW                         | DA_DPL3	; 显存首地址
+;                                段基址     段界限     ,        属性
+LABEL_GDT:			Descriptor         0,        0, 0								; 空描述符
+LABEL_DESC_FLAT_C:	Descriptor         0,  0fffffh, DA_CR  | DA_32 | DA_LIMIT_4K	; 0 ~ 4G
+LABEL_DESC_FLAT_RW:	Descriptor         0,  0fffffh, DA_DRW | DA_32 | DA_LIMIT_4K	; 0 ~ 4G
+LABEL_DESC_VIDEO:	Descriptor	 0B8000h,  	0ffffh, DA_DRW | DA_DPL3				; 显存首地址
 ; GDT ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 GdtLen		equ	$ - LABEL_GDT
@@ -792,7 +792,10 @@ SetupPaging:
 	jz	.no_remainder
 	inc	ecx		; 如果余数不为 0 就需增加一个页表
 .no_remainder:
+	; test
 	push	ecx		; 暂存页表个数
+	; mov ecx, 3
+	; push ecx
 
 	; 为简化处理, 所有线性地址对应相等的物理地址. 并且不考虑内存空洞.
 
@@ -808,7 +811,8 @@ SetupPaging:
 	loop	.1
 
 	; 再初始化所有页表
-	pop	eax			; 页表个数
+	; pop	eax			; 页表个数
+	mov eax, 3
 	mov	ebx, 1024		; 每个页表 1024 个 PTE
 	mul	ebx
 	mov	ecx, eax		; PTE个数 = 页表个数 * 1024
@@ -819,6 +823,23 @@ SetupPaging:
 	stosd
 	add	eax, 4096		; 每一页指向 4K 的空间
 	loop	.2
+
+	; proc child
+	pop ebx
+	push eax
+	mov eax, ebx
+	sub eax, 3
+	mov bx, 1024
+	mul ebx
+	mov ecx, eax
+	; edi -> 
+	pop eax
+.4:
+	stosd
+	add	eax, 4096		; 每一页指向 4K 的空间
+	; xor eax, 1
+	loop	.4
+
 
 	mov	eax, PAGE_DIR_BASE
 	mov	cr3, eax

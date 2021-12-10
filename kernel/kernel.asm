@@ -17,6 +17,7 @@ extern	clock_handler
 extern	disp_str
 extern	delay
 extern	irq_table
+extern 	page_fault_handler
 
 ; 导入全局变量
 extern	gdt_ptr
@@ -309,8 +310,44 @@ general_protection:
 	push	13		; vector_no	= D
 	jmp	exception
 page_fault:
-	push	14		; vector_no	= E
-	jmp	exception
+	; xchg bx, bx
+	; push	14		; vector_no	= E
+	; jmp	exception
+
+	; sub	esp, 4
+	pushad		; `.
+	push	ds	;  |
+	push	es	;  | 保存原寄存器值
+	push	fs	;  |
+	push	gs	; /
+	mov	dx, ss
+	mov	ds, dx
+	mov	es, dx
+
+	mov	al, EOI			; `. reenable
+	out	INT_M_CTL, al		; /  master 8259
+	
+	mov	esp, StackTop		; 切到内核栈
+
+	sti
+	push	14
+	call	page_fault_handler
+	add	esp, 4
+	cli
+	
+	mov	esp, [p_proc_ready]	; 离开内核栈
+	lldt	[esp + P_LDT_SEL]
+	lea	eax, [esp + P_STACKTOP]
+	mov	dword [tss + TSS3_S_SP0], eax
+
+	pop	gs	; `.
+	pop	fs	;  |
+	pop	es	;  | 恢复原寄存器值
+	pop	ds	;  |
+	popad		; /
+	add	esp, 4
+	iretd
+
 copr_error:
 	push	0xFFFFFFFF	; no err code
 	push	16		; vector_no	= 10h
@@ -325,6 +362,8 @@ exception:
 ;                                   save
 ; =============================================================================
 save:
+		; mov eax, cr3
+		; push eax
         pushad          ; `.
         push    ds      ;  |
         push    es      ;  | 保存原寄存器值
@@ -390,6 +429,7 @@ restart:
 	mov	dword [tss + TSS3_S_SP0], eax
 restart_reenter:
 	dec	dword [k_reenter]
+	; pop cr3
 	pop	gs
 	pop	fs
 	pop	es

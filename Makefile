@@ -39,7 +39,7 @@ OBJS		= kernel/kernel.o kernel/start.o kernel/main.o\
 			fs/main.o fs/open.o fs/misc.o fs/read_write.o\
 			fs/link.o\
 			fs/disklog.o \
-			kernel/check.o
+			kernel/check.o kernel/page_fault_handler.o
 LOBJS		=  lib/syscall.o\
 			lib/printf.o lib/vsprintf.o\
 			lib/string.o lib/misc.o\
@@ -224,4 +224,7 @@ lib/proc_display.o: lib/proc_display.c
 	$(CC) $(CFLAGS) -o $@ $<
 
 kernel/check.o: kernel/check.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+kernel/page_fault_handler.o: kernel/page_fault_handler.c
 	$(CC) $(CFLAGS) -o $@ $<

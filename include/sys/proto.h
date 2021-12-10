@@ -152,6 +152,9 @@ PUBLIC void writeChkFile (char* file_name, int flag);
 PUBLIC int CalCheckVal(char* filename);
 PUBLIC void exec_check(char* pathname);
 
+/* kernel/page_fault_handler.c */
+PUBLIC void page_fault_handler(int irq);
+
 /* 以下是系统调用相关 */
 
 /* 系统调用 - 系统级 */

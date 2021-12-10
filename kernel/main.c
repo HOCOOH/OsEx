@@ -131,6 +131,13 @@ PUBLIC int kernel_main()
 		p->regs.eip	= (u32)t->initial_eip;
 		p->regs.esp	= (u32)stk;
 		p->regs.eflags	= eflags;
+		// paging
+		// p->regs.cr3 = 0x100000;
+		int m;
+		for (m = 0; m < NR_VALID_PAGE; m++) {
+			p->valid_page_id[m] = m * 2;
+		}
+		p->replace = 0;
 
 		p->ticks = p->priority = prio;
 
@@ -441,7 +448,7 @@ void TestA()
 		test_delay(20);
 	}
 
-	dump_proc_display(pids[0]);
+	// dump_proc_display(pids[0]);
 
 	for (i = 0; i < NR_PROC_TEST; i ++) {
 		int s;
