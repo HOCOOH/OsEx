@@ -142,8 +142,13 @@ PUBLIC void unblock(struct proc* p);
 PUBLIC void spin(char * func_name);
 
 /* kernel/mfqs_queue.c */
+/* 将进程号为pid的进程加入第queue_id级的队列中, 赋予时间片time_remain*/
 PUBLIC int enqueue(int queue_id, int pid, int time_remain);
+
+/* 将第queue_id级队列的队首元素出队, 对应进程号存放于p_pid中 */
 PUBLIC int dequeue(int queue_id, int* p_pid);
+
+/* 在所有队列中查找进程号为pid的进程并删除 */
 PUBLIC int remove(int pid);
 
 /* kernel/check.c*/

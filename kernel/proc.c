@@ -277,8 +277,7 @@ PUBLIC void reset_msg(MESSAGE* p)
  * 
  * @param p The proc to be blocked.
  *****************************************************************************/
-PUBLIC void block(struct proc* p)
-{
+PUBLIC void block(struct proc* p) {
 	assert(p->p_flags);
 	// schedule();
 
@@ -298,8 +297,7 @@ PUBLIC void block(struct proc* p)
  * 
  * @param p The unblocked proc.
  *****************************************************************************/
-PUBLIC void unblock(struct proc* p)
-{
+PUBLIC void unblock(struct proc* p) {
 	assert(p->p_flags == 0);
 
 	enqueue(p->current_queue, proc2pid(p), p->ticks);

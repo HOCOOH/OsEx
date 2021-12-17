@@ -16,10 +16,10 @@
 // #define TICKS_BLOCK(p) (((p)->current_queue ? (p)->ticks : TICKS_DEFAULT))
 
 struct proc_queue {
-    int proc_pid[NR_PROC_IN_QUEUE];
-    int front;
-    int rear;
-    int time_slot;
+    int proc_pid[NR_PROC_IN_QUEUE]; // 进程id
+    int front;      // 队列头
+    int rear;       // 队列尾                
+    int time_slot;  // 队列默认时间片
 };
 
 

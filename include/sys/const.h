@@ -294,8 +294,8 @@ enum msgtype {
 #define	NR_DEFAULT_FILE_SECTS	2048 /* 2048 * 512 = 1MB */
 
 
-#define NR_PROC_QUEUE 5
-#define NR_PROC_IN_QUEUE 50
+#define NR_PROC_QUEUE 5			// 调度队列数量
+#define NR_PROC_IN_QUEUE 50		// 调度队列大小
 
 // #define MAX_PROC_TICKS 30
 
