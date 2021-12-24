@@ -40,6 +40,7 @@ PUBLIC void restart();
 /* main.c */
 PUBLIC void Init();
 PUBLIC int  get_ticks();
+PUBLIC void proc_eval();
 PUBLIC void TestA();
 PUBLIC void TestB();
 PUBLIC void TestC();

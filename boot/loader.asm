@@ -832,12 +832,11 @@ SetupPaging:
 	mov bx, 1024
 	mul ebx
 	mov ecx, eax
-	; edi -> 
 	pop eax
 .4:
 	stosd
 	add	eax, 4096		; 每一页指向 4K 的空间
-	; xor eax, 1
+	xor eax, 1
 	loop	.4
 
 

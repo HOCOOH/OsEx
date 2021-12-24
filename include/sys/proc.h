@@ -78,7 +78,7 @@ struct proc {
 	int start_time;
 	int end_time; 
 
-	// paging test
+	// paging
 	int valid_page_id[NR_VALID_PAGE];
 	int replace;
 };
@@ -106,9 +106,9 @@ struct task {
  * @see global.c
  * @see global.h
  */
-#define	PROCS_BASE		0xC00000 /* 10 MB 12m */
-#define	PROC_IMAGE_SIZE_DEFAULT	0x80000 /*  1 MB 512k */
-#define	PROC_ORIGIN_STACK	0x400    /*  1 KB */
+#define	PROCS_BASE		0xC00000 /* 12MB */
+#define	PROC_IMAGE_SIZE_DEFAULT	0x80000 /* 512KB */
+#define	PROC_ORIGIN_STACK	0x400    /* 1 KB */
 
 /* stacks of tasks */
 #define	STACK_SIZE_DEFAULT	0x4000 /* 16 KB */

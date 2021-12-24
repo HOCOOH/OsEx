@@ -310,44 +310,37 @@ general_protection:
 	push	13		; vector_no	= D
 	jmp	exception
 page_fault:
-	; xchg bx, bx
-	; push	14		; vector_no	= E
-	; jmp	exception
-
-	; sub	esp, 4
-	pushad		; `.
-	push	ds	;  |
-	push	es	;  | 保存原寄存器值
-	push	fs	;  |
-	push	gs	; /
-	mov	dx, ss
-	mov	ds, dx
-	mov	es, dx
-
-	mov	al, EOI			; `. reenable
-	out	INT_M_CTL, al		; /  master 8259
-	
-	mov	esp, StackTop		; 切到内核栈
+	add esp, 4
+	call	save
 
 	sti
 	push	14
 	call	page_fault_handler
 	add	esp, 4
 	cli
+
+	ret
+
+	; sub	esp, 4
+	; pushad		; `.
+	; push	ds	;  |
+	; push	es	;  | 保存原寄存器值
+	; push	fs	;  |
+	; push	gs	; /
+	; mov	dx, ss
+	; mov	ds, dx
+	; mov	es, dx
+	; inc	dword [k_reenter]
+
+	; mov	esp, StackTop		; 切到内核栈
+
+	; sti
+	; push	14
+	; call	page_fault_handler
+	; add	esp, 4
+	; cli
 	
-	mov	esp, [p_proc_ready]	; 离开内核栈
-	lldt	[esp + P_LDT_SEL]
-	lea	eax, [esp + P_STACKTOP]
-	mov	dword [tss + TSS3_S_SP0], eax
-
-	pop	gs	; `.
-	pop	fs	;  |
-	pop	es	;  | 恢复原寄存器值
-	pop	ds	;  |
-	popad		; /
-	add	esp, 4
-	iretd
-
+	; jmp restart
 copr_error:
 	push	0xFFFFFFFF	; no err code
 	push	16		; vector_no	= 10h

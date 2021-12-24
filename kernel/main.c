@@ -397,6 +397,14 @@ void Init()
 	// msg.type	= PRINT_FILE;
 	// send_recv(BOTH, TASK_SYS, &msg);
 
+	// proc test
+	int pid = fork();
+	if (pid == 0) {
+		proc_eval();
+		exit(0);
+	}
+
+
 	while (1) {
 		int s;
 		int child = wait(&s, -1);
@@ -406,11 +414,8 @@ void Init()
 	assert(0);
 }
 
-/*======================================================================*
-                               TestA
- *======================================================================*/
-void TestA()
-{
+
+PUBLIC void proc_eval() {
 	printl("\nproc test start\n");
 	int i;
 	int pids[NR_PROC_TEST];
@@ -428,7 +433,6 @@ void TestA()
 		}
 		else {			// chlid proc
 			inform_start();
-
 			printl("[child is running, pid:%d]\n", getpid());
 
 			test_delay(delay1[i]);
@@ -448,11 +452,26 @@ void TestA()
 		test_delay(20);
 	}
 
-	// dump_proc_display(pids[0]);
+	dump_proc_display(pids[0]);
 
 	for (i = 0; i < NR_PROC_TEST; i ++) {
 		int s;
 		wait(&s, pids[i]);
+	}
+}
+
+/*======================================================================*
+                               TestA
+ *======================================================================*/
+void TestA()
+{
+	MESSAGE msg;
+	while(1) {
+		send_recv(RECEIVE, ANY, &msg);
+
+		int src = msg.source;
+		test_delay(msg.CNT);
+		send_recv(SEND, src, &msg);
 	}
 
 	for(;;);
@@ -480,15 +499,6 @@ void TestB()
  *======================================================================*/
 void TestC()
 {
-	MESSAGE msg;
-	while(1) {
-		send_recv(RECEIVE, ANY, &msg);
-
-		int src = msg.source;
-		test_delay(10);
-		send_recv(SEND, src, &msg);
-	}
-
 	for(;;);
 }
 
