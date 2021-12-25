@@ -53,12 +53,15 @@ PUBLIC void task_mm()
 			break;
 		case EXEC:
 			mm_msg.RETVAL = do_exec();
-			proc_table[src].p_msg = 0;
-			proc_table[src].p_flags &= ~RECEIVING; /* dest has received the msg */
-			proc_table[src].p_recvfrom = NO_TASK;
-			unblock(proc_table + src);
-			reply = 0;
+			if (proc_table[src].p_flags == 0) {
+				reply = 0;
+			}
 			break;
+			// proc_table[src].p_msg = 0;
+			// proc_table[src].p_flags &= ~RECEIVING; /* dest has received the msg */
+			// proc_table[src].p_recvfrom = NO_TASK;
+			// unblock(proc_table + src);
+			// reply = 0;
 		case WAIT:
 			do_wait();
 			reply = 0;

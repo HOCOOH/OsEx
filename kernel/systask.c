@@ -172,8 +172,8 @@ PRIVATE int do_is_finish(int pid_begin) {
 
 
 PRIVATE void do_dump_proc(int pid_begin) {
-	printl("|--------------------------------------------------------------------|\n");
-	printl("| proc_name | eval | arrive | start |  end  | cycle | weighted_cycle |\n");
+	printl("|----------------------------------------------------------------------|\n");
+	printl("|  proc_name  | eval | arrive | start |  end  | cycle | weighted_cycle |\n");
 
 	int i;
 	struct proc* p;
@@ -186,13 +186,13 @@ PRIVATE void do_dump_proc(int pid_begin) {
 		assert(p->p_flags & HANGING);
 		sum += p->end_time - p->arrive_time;
 		weighted_sum += (p->end_time - p->arrive_time) / delay_sum[i];
-		printl("|--------------------------------------------------------------------|\n");
-		printl("| %8s  | %4d | %5d  | %5d | %5d | %5d | %9d      |\n", p->name, delay_sum[i], p->arrive_time, \
+		printl("|----------------------------------------------------------------------|\n");
+		printl("| %10s  | %4d | %5d  | %5d | %5d | %5d | %9d      |\n", p->name, delay_sum[i], p->arrive_time, \
 			p->start_time, p->end_time, p->end_time - p->arrive_time, (p->end_time - p->arrive_time) / delay_sum[i]);
 	}
-	printl("|--------------------------------------------------------------------|\n");
+	printl("|----------------------------------------------------------------------|\n");
 	printl("| average cycle time: %5d                                          |\n", sum / NR_PROC_TEST);
-	printl("|--------------------------------------------------------------------|\n");
+	printl("|----------------------------------------------------------------------|\n");
 	printl("| weighted average cycle time: %5d                                 |\n", weighted_sum / NR_PROC_TEST);
-	printl("|--------------------------------------------------------------------|\n");
+	printl("|----------------------------------------------------------------------|\n");
 }

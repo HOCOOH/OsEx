@@ -836,7 +836,7 @@ SetupPaging:
 .4:
 	stosd
 	add	eax, 4096		; 每一页指向 4K 的空间
-	xor eax, 1
+	; xor eax, 1
 	loop	.4
 
 

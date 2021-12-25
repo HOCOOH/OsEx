@@ -390,7 +390,7 @@ void Init()
 		}
 	}
 	
-	printl("orange's os initialization completed, ticks: %d\n", get_ticks());
+	printl("Orange's os initialization completed, ticks: %d\n", get_ticks());
 
 	// MESSAGE msg;
 

@@ -12,7 +12,6 @@
 #include "proto.h"
 
 PUBLIC void page_fault_handler(int irq) {
-    // bb;
     u32 addr;
     //将引发缺页异常的线性地址保存在addr变量里面  
     asm("movl %%cr2,%0":"=r" (addr));   
@@ -44,5 +43,5 @@ PUBLIC void page_fault_handler(int irq) {
     p->valid_page_id[p->replace] = curr_page_id;
     p->replace = (p->replace + 1) % NR_VALID_PAGE;  // FIFO
 
-    printl("Page %d -> Page %d\n", die_page_id, curr_page_id);
+    printl("%10s access 0x%x : Page %d -> Page %d\n", p->name, addr, die_page_id, curr_page_id);
 }
