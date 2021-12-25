@@ -95,6 +95,8 @@ PUBLIC int do_fork()
 	       (caller_T_limit == caller_D_S_limit) &&
 	       (caller_T_size  == caller_D_S_size ));
 
+	// printl("%s request %d\n", p->name, caller_T_size);
+
 	/* base of child proc, T, D & S segments share the same space,
 	   so we allocate memory just once */
 	int child_base = alloc_mem(child_pid, caller_T_size);

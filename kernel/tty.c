@@ -200,7 +200,7 @@ PUBLIC void in_process(TTY* tty, u32 key)
 		case F11:
 		case F12:
 			if ((key & FLAG_CTRL_L) ||
-			    (key & FLAG_CTRL_R)) {	/* Alt + F1~F12 */
+			    (key & FLAG_CTRL_R)) {	/* Ctrl + F1~F12 */
 				select_console(raw_code - F1);
 				tty_current = raw_code - F1;
 			}

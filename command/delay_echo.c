@@ -4,8 +4,7 @@ int main(int argc, char * argv[])
 {
     int i, j, k;
     for (i = 0; i < 10000; i++) {
-        for (j = 0; j < 2000; j++) {
-
+        for (j = 0; j < 4000; j++) {
         }
     }
 

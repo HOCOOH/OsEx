@@ -40,6 +40,7 @@ PUBLIC void restart();
 /* main.c */
 PUBLIC void Init();
 PUBLIC int  get_ticks();
+PUBLIC void proc_eval();
 PUBLIC void TestA();
 PUBLIC void TestB();
 PUBLIC void TestC();
@@ -151,6 +152,9 @@ PUBLIC int parityCheck (u8 v);
 PUBLIC void writeChkFile (char* file_name, int flag);
 PUBLIC int CalCheckVal(char* filename);
 PUBLIC void exec_check(char* pathname);
+
+/* kernel/page_fault_handler.c */
+PUBLIC void page_fault_handler(int irq);
 
 /* 以下是系统调用相关 */
 

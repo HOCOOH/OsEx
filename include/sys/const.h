@@ -301,4 +301,10 @@ enum msgtype {
 
 #define NR_PROC_TEST 5
 
+#define NR_VALID_PAGE 64
+#define PG_P 1
+#define PAGE_MASK 0xfffff000
+#define PROC_PTE_SIZE (PROC_IMAGE_SIZE_DEFAULT >> 10)
+#define PROCS_PTE_BASE ((PROCS_BASE >> 10) + 0x101000)
+
 #endif /* _ORANGES_CONST_H_ */

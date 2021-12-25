@@ -131,6 +131,13 @@ PUBLIC int kernel_main()
 		p->regs.eip	= (u32)t->initial_eip;
 		p->regs.esp	= (u32)stk;
 		p->regs.eflags	= eflags;
+		// paging
+		// p->regs.cr3 = 0x100000;
+		int m;
+		for (m = 0; m < NR_VALID_PAGE; m++) {
+			p->valid_page_id[m] = m * 2;
+		}
+		p->replace = 0;
 
 		p->ticks = p->priority = prio;
 
@@ -383,12 +390,20 @@ void Init()
 		}
 	}
 	
-	printl("orange's os initialization completed, ticks: %d\n", get_ticks());
+	printl("Orange's os initialization completed, ticks: %d\n", get_ticks());
 
 	// MESSAGE msg;
 
 	// msg.type	= PRINT_FILE;
 	// send_recv(BOTH, TASK_SYS, &msg);
+
+	// proc test
+	int pid = fork();
+	if (pid == 0) {
+		proc_eval();
+		exit(0);
+	}
+
 
 	while (1) {
 		int s;
@@ -399,11 +414,8 @@ void Init()
 	assert(0);
 }
 
-/*======================================================================*
-                               TestA
- *======================================================================*/
-void TestA()
-{
+
+PUBLIC void proc_eval() {
 	printl("\nproc test start\n");
 	int i;
 	int pids[NR_PROC_TEST];
@@ -421,7 +433,6 @@ void TestA()
 		}
 		else {			// chlid proc
 			inform_start();
-
 			printl("[child is running, pid:%d]\n", getpid());
 
 			test_delay(delay1[i]);
@@ -446,6 +457,21 @@ void TestA()
 	for (i = 0; i < NR_PROC_TEST; i ++) {
 		int s;
 		wait(&s, pids[i]);
+	}
+}
+
+/*======================================================================*
+                               TestA
+ *======================================================================*/
+void TestA()
+{
+	MESSAGE msg;
+	while(1) {
+		send_recv(RECEIVE, ANY, &msg);
+
+		int src = msg.source;
+		test_delay(msg.CNT);
+		send_recv(SEND, src, &msg);
 	}
 
 	for(;;);
@@ -473,15 +499,6 @@ void TestB()
  *======================================================================*/
 void TestC()
 {
-	MESSAGE msg;
-	while(1) {
-		send_recv(RECEIVE, ANY, &msg);
-
-		int src = msg.source;
-		test_delay(10);
-		send_recv(SEND, src, &msg);
-	}
-
 	for(;;);
 }
 

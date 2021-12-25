@@ -7,6 +7,7 @@
 
 
 struct stackframe {	/* proc_ptr points here				↑ Low			*/
+	// u32 cr3;
 	u32	gs;		/* ┓						│			*/
 	u32	fs;		/* ┃						│			*/
 	u32	es;		/* ┃						│			*/
@@ -76,6 +77,10 @@ struct proc {
 	int arrive_time;
 	int start_time;
 	int end_time; 
+
+	// paging
+	int valid_page_id[NR_VALID_PAGE];
+	int replace;
 };
 
 struct task {
@@ -101,9 +106,9 @@ struct task {
  * @see global.c
  * @see global.h
  */
-#define	PROCS_BASE		0xA00000 /* 10 MB */
-#define	PROC_IMAGE_SIZE_DEFAULT	0x100000 /*  1 MB */
-#define	PROC_ORIGIN_STACK	0x400    /*  1 KB */
+#define	PROCS_BASE		0xC00000 /* 12MB */
+#define	PROC_IMAGE_SIZE_DEFAULT	0x80000 /* 512KB */
+#define	PROC_ORIGIN_STACK	0x400    /* 1 KB */
 
 /* stacks of tasks */
 #define	STACK_SIZE_DEFAULT	0x4000 /* 16 KB */
